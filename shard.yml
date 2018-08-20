@@ -1,0 +1,21 @@
+name: silver
+version: 0.1.0
+
+authors:
+    - Rishav Sharan <rishav.sharan@gmail.com>
+
+dependencies:
+    pg:
+        github: will/crystal-pg
+    dotenv:
+        github: gdotdesign/cr-dotenv
+    jwt:
+        github: crystal-community/jwt
+
+targets:
+    silver:
+        main: src/silver.cr
+
+crystal: 0.26.0
+
+license: MIT
