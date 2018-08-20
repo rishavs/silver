@@ -1,0 +1,31 @@
+<div class="ui fixed menu">
+    <div class="ui container">
+        <a href="/" class="header item" >
+            Digglu
+        </a>
+        <div class="item">
+            <a href="/about" >About</a>
+        </div>
+        <div class="item">
+            <a href="/secret" >Secret</a>
+        </div>
+        <div class="right menu">
+            <%- if route.identifier == "true" -%>
+            <div class="item">
+                <a href="/p/new/" class="ui blue button" >New Post</a>
+            </div>
+            <div class="item">
+                <a href="/logout" >Logout</a>
+            </div>
+
+            <%- else -%>
+            <div class="item">
+                <a href="/register" >Register</a>
+            </div>
+            <div class="item">
+                <a href="/login" class="ui blue button" >Login</a>
+            </div>
+            <%- end -%>
+        </div>
+    </div>
+</div>
