@@ -31,8 +31,8 @@ module Silver
             case {method, route.resource, route.identifier, route.verb}
 
             when { "GET", "p", route.identifier, nil}
-                page = ECR.def_to_s "./silver/views/pages/Home.ecr"
-                ctx.response.print ECR.def_to_s "./silver/views/Layout.ecr"
+                # page = ECR.render "./src/silver/views/pages/Home.ecr"
+                ctx.response.print ECR.render "./src/silver/views/Layout.ecr"
 
             # Catch-all routes    
             when { "GET", nil, nil, nil}

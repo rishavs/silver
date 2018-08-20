@@ -3,6 +3,7 @@ require "dotenv"
 require "db"
 require "pg"
 require "ecr"
+
 require "crypto/bcrypt/password"
 
 require "./silver/*"
@@ -21,7 +22,7 @@ module Silver
         HTTP::ErrorHandler.new,
         HTTP::LogHandler.new,
     ]) do |context|
-        context.response.content_type = "text/plain"
+        context.response.content_type = "text/html; charset=utf-8"    
         Router.run(context.request.method, context.request.resource, context)
     end
 
