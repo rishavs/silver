@@ -31,14 +31,19 @@ module Silver
             case {method, route.resource, route.identifier, route.verb}
 
             when { "GET", "p", route.identifier, nil}
-                # page = ECR.render "./src/silver/views/pages/Home.ecr"
-                ctx.response.print ECR.render "./src/silver/views/Layout.ecr"
+                page = ECR.render("./src/silver/views/pages/Post_show.ecr")
+                html = ECR.render("./src/silver/views/Layout.ecr")
+                ctx.response.print(html)
 
             # Catch-all routes    
             when { "GET", nil, nil, nil}
-                ctx.response.print "HOME"
+                page = ECR.render("./src/silver/views/pages/Home.ecr")
+                html = ECR.render("./src/silver/views/Layout.ecr")
+                ctx.response.print(html)
             else
-                ctx.response.print "Yo dis 404"
+                page = ECR.render("./src/silver/views/pages/Error404.ecr")
+                html = ECR.render("./src/silver/views/Layout.ecr")
+                ctx.response.print(html)
             end
 
         end
