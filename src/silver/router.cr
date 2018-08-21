@@ -30,6 +30,11 @@ module Silver
 
             case {method, route.resource, route.identifier, route.verb}
 
+            when { "GET", "about", nil, nil}
+                page = ECR.render("./src/silver/views/pages/About.ecr")
+                html = ECR.render("./src/silver/views/Layout.ecr")
+                ctx.response.print(html)
+
             when { "GET", "p", route.identifier, nil}
                 page = ECR.render("./src/silver/views/pages/Post_show.ecr")
                 html = ECR.render("./src/silver/views/Layout.ecr")
