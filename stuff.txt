@@ -22,8 +22,18 @@
         IS_DELETED BOOL DEFAULT FALSE,
         CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        DELETED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        DELETED_AT TIMESTAMP
     );
+
+    insert into posts (unqid, title, link, thumb, content, author_id, author_nick)
+    values ('pid01', 'All the Rage back Home', 'yahoo.com', 'https://d1csp7g2pnyvdv.cloudfront.net/uploads/story_world/cover/20/3b710db6-f1d3-431b-afe0-ab6e51bfa0b5.jpg',
+    'Everyday life is hard for Tate, especially making friends. He likes to play with spinning tops all the time, which is uncommon for a third grader. A new classmate of his, Logan, can tell that Tate is different, that there’s something very special about him.
+Together, they discover the unimaginable: Tates top can transport them to different dimensions, where they meet unexpected friends and experience fun adventures together.
+Tate has difficulty making friends because his autism makes him different. But an unexpected adventure with a new classmate could be the start of something great.
+Tates top transports him and Logan to the Mesozoic Era when dinosaurs ruled the Earth! They are excited, but also scared. Hopefully, they can have a little fun and not become the lunchtime special!
+The boys spin the top in a creative way at recess. But, instead of time traveling backward, they find themselves in a future world!
+The top takes Tate and Logan to ancient Egypt where they encounter exciting yet unfamiliar features of the Egyptian life, including hieroglyphics, pharaohs and pyramids.
+Tate and Logan have forged a great friendship, but when Logan asks Tate to meet his other friends, Tates insecurities creep up again.', 'authid01', 'Dan Simmons')
 
     CREATE TABLE COMMENTS(
         UNQID TEXT PRIMARY KEY,
@@ -37,7 +47,7 @@
         IS_DELETED BOOL DEFAULT FALSE,
         CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        DELETED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        DELETED_AT TIMESTAMP
     );
 
     insert into comments (unqid, level, post_id, parent_id,  children_ids, content, author_id) 
