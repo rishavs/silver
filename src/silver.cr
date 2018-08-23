@@ -2,7 +2,7 @@ require "http/server"
 require "dotenv"
 require "db"
 require "pg"
-require "ecr"
+require "ecr/macros"
 
 require "crypto/bcrypt/password"
 
