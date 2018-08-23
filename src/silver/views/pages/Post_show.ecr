@@ -1,5 +1,5 @@
 <article id="read_post_page">
-    <h1>#{post_data[:title]}</h1>
+    <h1><%= post_data.title %></h1>
     <div class="ui items">
         <div class="item">
             <div class="ui medium image">
@@ -14,7 +14,7 @@
                         </a>
                         <div class="content">
                             <a class="author">Matt</a>
-                            <div class="metadata">
+                            <div class="metapost_data">
                                 <div class="date"> <i class="clock icon"></i> 2 days ago</div>
                                 <div class="rating">
                                     <i class="star icon"></i>
@@ -23,7 +23,7 @@
                             </div>
 
                             <div class="text">
-                                #{post_data[:content]}
+                                <%= post_data.content %>
                             </div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
     <form class="ui reply form" id="reply_form" style="display:none" action="/c/new/" method="post">
         <br />
         <input name="parent_id" value="none" style="display:none"></input>
-        <input name="post_id" value="#{post_data[:unqid]}" style="display:none"></input>
+        <input name="post_id" value="<%=post_data.unqid %>" style="display:none"></input>
         <input name="level" value="0" style="display:none"></input>
         <div class="field">
             <textarea
@@ -68,5 +68,5 @@
     </form>
     
     <h3 class="ui dividing header">Comments</h3>
-<!--     #{comments_view} -->
+
 </article>

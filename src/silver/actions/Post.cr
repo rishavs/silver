@@ -1,21 +1,33 @@
-module Silver::Actions
+module Silver
     class Post
-        def self.render_new_post(ctx)
-            begin
-                raise "This is an ERROR!!"
-            rescue ex
-                pp ex
-                err = ex.message.to_s
-            ensure
-                pp err
+        DB.mapping({
+            unqid: String,
+            title: String,
+            link: {
+                type:    String,
+                nilable: true
+            },
+            content: String,
+            author_id: String,
+            author_nick: String,
+            author_flair: {
+                type:    String,
+                nilable: true
+            }
+        })
+      
+        def initialize(@unqid, @title, @content)
+        end
 
-                # page    = ECR.render("./src/silver/views/pages/Post_new.ecr")
-                # html    = ECR.render("./src/silver/views/Layout.ecr")
-
-                ctx.response.content_type = "text/html; charset=utf-8"
-                ctx.response.print(flash)
+        def self.get(postid) 
+            if postid
+                postObj = Post.from_rs(DB.query("select unqid, title, content, link, author_id, author_nick 
+                from posts where unqid = $1", postid))
+                pp postObj
+                return postObj[0]
             end
         end
 
     end
+
 end
