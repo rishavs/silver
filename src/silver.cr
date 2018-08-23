@@ -7,6 +7,8 @@ require "ecr"
 require "crypto/bcrypt/password"
 
 require "./silver/*"
+require "./silver/actions/*"
+
 
 module Silver
     port = 3000

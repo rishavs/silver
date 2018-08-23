@@ -25,7 +25,7 @@ module Silver
 
     class Router
         def self.run(method, url, ctx)
-            store = Silver::Store.new
+            store = Store.new
             route = Route.new(url)
 
             case {method, route.resource, route.identifier, route.verb}
@@ -35,10 +35,16 @@ module Silver
                 html = ECR.render("./src/silver/views/Layout.ecr")
                 ctx.response.print(html)
 
+            when { "GET", "p", "new", nil}
+                Actions::Post.render_new_post(ctx)
+                ctx.response.print(Render::Post_new.new.to_s)
             when { "GET", "p", route.identifier, nil}
                 page = ECR.render("./src/silver/views/pages/Post_show.ecr")
                 html = ECR.render("./src/silver/views/Layout.ecr")
                 ctx.response.print(html)
+
+            # when { "GET", "c", "new", nil}
+            #     Actions::Post.render_new_post(ctx)
 
             # Catch-all routes    
             when { "GET", nil, nil, nil}

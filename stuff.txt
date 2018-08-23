@@ -64,3 +64,12 @@ Tate and Logan have forged a great friendship, but when Logan asks Tate to meet 
 
     insert into comments (unqid, level, post_id, parent_id,  children_ids, content, author_id) 
     values ('cid200', 0, 'c47b5af1-a43b-4488-86cd-a42645b66c10' , 'none', '{}', 'This is 2nd PARENT level comment', 'Dante');
+
+
+
+    This is one of the most common issues people run into in Crystal. It is because instance variables (in this case status) must be assigned to a local variable first, or use try. So you can do something like store.status.try do |status| and then check status == "error"
+It would be awesome if Crystal gave you an error because it is nearly impossible to figure out without reading it in the docs or someone telling you
+Luckily once you know about it it is pretty easy to workaround :)
+More info here: https://crystal-lang.org/docs/syntax_and_semantics/if_var.html under "Limitations"
+Or actually you might need store.try since it appears to also be nilable
+Also, I'd consider not allowing status and message to be nil and instead make just the store billable. So if the store is there, it always has a status and message

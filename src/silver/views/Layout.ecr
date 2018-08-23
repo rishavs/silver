@@ -13,7 +13,8 @@
     <body>
         <%= ECR.render "./src/silver/views/components/Navbar.ecr" %>
         <div id = "home_page" class="ui main container pageEntry">
-            <%= page %>
+            <%= @flash %>
+            <%= @page %>
         </div>
 
         <script src="http://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
