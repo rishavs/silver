@@ -1,1 +1,8 @@
-<h1> HOME </h1>
+<article id="home_page">
+    <h1>HOME</h1>
+    <ol>
+        <% posts_list.try &.each do |item| %>
+        <li><a href='/p/<%= item.unqid %>'> <%= item.title %> </a></li>
+        <% end %>
+    </ol>
+</article>

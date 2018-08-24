@@ -7,27 +7,39 @@ module Silver
 
             case {method, route.resource, route.identifier, route.verb}
 
-            when { "GET", "about", nil, nil}
-                page = ECR.render("./src/silver/views/pages/About.ecr")
-
+            # -------------------------------
+            # Routes for Posts
+            # -------------------------------
             when { "GET", "p", "new", nil}
                 page = ECR.render("./src/silver/views/pages/Post_new.ecr")
             when { "GET", "p", route.identifier, nil}
                 err, post_data = Post.get(route.identifier)
-                pp err, post_data
+                # pp err, post_data
                 if post_data
                     page = ECR.render("./src/silver/views/pages/Post_show.ecr")
                 else
                     page = ECR.render("./src/silver/views/pages/Error404.ecr")
                 end
 
-            # Catch-all routes    
+            # -------------------------------
+            # Misc routes
+            # -------------------------------
+            when { "GET", "about", nil, nil}
+                page = ECR.render("./src/silver/views/pages/About.ecr")
+                
+            # -------------------------------
+            # Catch-all routes
+            # -------------------------------
             when { "GET", nil, nil, nil}
+                err, posts_list = Post.get_list()
                 page = ECR.render("./src/silver/views/pages/Home.ecr")
             else
                 page = ECR.render("./src/silver/views/pages/Error404.ecr")
             end
 
+            # -------------------------------
+            # Render selected page
+            # -------------------------------
             navbar  = ECR.render("./src/silver/views/components/Navbar.ecr")
             flash   = ECR.render("./src/silver/views/components/Flash.ecr") 
             # ECR.embed "./src/silver/views/Layout.ecr", ctx.response

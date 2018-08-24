@@ -22,13 +22,27 @@ module Silver
         def self.get(postid) 
             begin
                 err = nil
-                postObj = Post.from_rs(DB.query("select unqid, title, content, link, author_id, author_nick 
+                post = Post.from_rs(DB.query("select unqid, title, content, link, author_id, author_nick 
                 from posts where unqid = $1 limit 1", postid))
             rescue ex
                 err = ex.message.to_s
                 pp err
             ensure
-                val = postObj && !postObj.empty? ? postObj[0] : nil
+                val = post && !post.empty? ? post[0] : nil
+            end
+            return err, val
+        end
+
+        def self.get_list() 
+            begin
+                err = nil
+                posts = Post.from_rs(DB.query("select unqid, title, content, link, author_id, author_nick 
+                from posts"))
+            rescue ex
+                err = ex.message.to_s
+                pp err
+            ensure
+                val = posts
             end
             return err, val
         end
