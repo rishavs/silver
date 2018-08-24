@@ -16,16 +16,21 @@ module Silver
             }
         })
       
-        def initialize(@unqid, @title, @content)
-        end
+        # def initialize(@unqid, @title, @content)
+        # end
 
         def self.get(postid) 
-            if postid
+            begin
+                err = nil
                 postObj = Post.from_rs(DB.query("select unqid, title, content, link, author_id, author_nick 
-                from posts where unqid = $1", postid))
-                pp postObj
-                return postObj[0]
+                from posts where unqid = $1 limit 1", postid))
+            rescue ex
+                err = ex.message.to_s
+                pp err
+            ensure
+                val = postObj && !postObj.empty? ? postObj[0] : nil
             end
+            return err, val
         end
 
     end

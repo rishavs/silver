@@ -13,7 +13,8 @@ module Silver
             when { "GET", "p", "new", nil}
                 page = ECR.render("./src/silver/views/pages/Post_new.ecr")
             when { "GET", "p", route.identifier, nil}
-                post_data = Post.get(route.identifier)
+                err, post_data = Post.get(route.identifier)
+                pp err, post_data
                 if post_data
                     page = ECR.render("./src/silver/views/pages/Post_show.ecr")
                 else
