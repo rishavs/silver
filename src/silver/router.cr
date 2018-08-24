@@ -8,11 +8,38 @@ module Silver
             case {method, route.resource, route.identifier, route.verb}
 
             # -------------------------------
+            # Routes for Auth
+            # -------------------------------
+            when { "GET", "register", nil, nil}
+                page = ECR.render("./src/silver/views/pages/Register.ecr")
+            when { "POST", "register", nil, nil}
+                err, post_data = Post.get(route.identifier)
+                if err
+                    page = ECR.render("./src/silver/views/pages/Register.ecr")
+                else
+                    Router.redirect("/", ctx)
+                end
+
+            # -------------------------------
             # Routes for Posts
             # -------------------------------
             when { "GET", "p", "new", nil}
                 page = ECR.render("./src/silver/views/pages/Post_new.ecr")
             when { "GET", "p", route.identifier, nil}
+                err, post_data = Post.get(route.identifier)
+                # pp err, post_data
+                if post_data
+                    page = ECR.render("./src/silver/views/pages/Post_show.ecr")
+                else
+                    page = ECR.render("./src/silver/views/pages/Error404.ecr")
+                end
+
+            # -------------------------------
+            # Routes for Users
+            # -------------------------------
+            when { "GET", "u", "me", nil}
+                page = ECR.render("./src/silver/views/pages/Post_new.ecr")
+            when { "GET", "u", route.identifier, nil}
                 err, post_data = Post.get(route.identifier)
                 # pp err, post_data
                 if post_data

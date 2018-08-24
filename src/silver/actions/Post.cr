@@ -21,7 +21,6 @@ module Silver
 
         def self.get(postid) 
             begin
-                err = nil
                 post = Post.from_rs(DB.query("select unqid, title, content, link, author_id, author_nick 
                 from posts where unqid = $1 limit 1", postid))
             rescue ex
@@ -35,7 +34,6 @@ module Silver
 
         def self.get_list() 
             begin
-                err = nil
                 posts = Post.from_rs(DB.query("select unqid, title, content, link, author_id, author_nick 
                 from posts"))
             rescue ex

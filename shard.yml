@@ -7,6 +7,8 @@ authors:
 dependencies:
     pg:
         github: will/crystal-pg
+    granite:
+        github: amberframework/granite
     dotenv:
         github: gdotdesign/cr-dotenv
     jwt:
