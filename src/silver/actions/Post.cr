@@ -1,50 +1,45 @@
 module Silver
-    class Post
-        DB.mapping({
-            unqid: String,
-            title: String,
-            link: {
-                type:    String,
-                nilable: true
-            },
-            content: String,
-            author_id: String,
-            author_nick: String,
-            author_flair: {
-                type:    String,
-                nilable: true
-            }
-        })
-      
-        # def initialize(@unqid, @title, @content)
-        # end
+    class Post < Granite::Base
+        adapter pg
+
+        field unqid :           String
+        field! title :          String
+        field content :         String
+        field link :            String
+        field thumb :           String
+        field! author_id :      String
+        field! author_nick :    String
+        field! author_flair :   String
+
+        timestamps
+
+        before_create :assign_unqid
+        def assign_unqid
+            @unqid = UUID.random.to_s
+        end
+
+        validate_uniqueness :unqid
+        validate_min_length :title, 3
+        validate_max_length :title, 255
 
         def self.get(postid) 
             begin
-                post = Post.from_rs(DB.query("select unqid, title, content, link, author_id, author_nick 
-                from posts where unqid = $1 limit 1", postid))
+                post = Post.find postid
             rescue ex
                 err = ex.message.to_s
                 pp err
-            ensure
-                val = post && !post.empty? ? post[0] : nil
             end
-            return err, val
+            return err, post
         end
 
         def self.get_list() 
             begin
-                posts = Post.from_rs(DB.query("select unqid, title, content, link, author_id, author_nick 
-                from posts"))
+                posts = Post.all("ORDER BY created_at DESC")
             rescue ex
                 err = ex.message.to_s
                 pp err
-            ensure
-                val = posts
             end
-            return err, val
+            return err, posts
         end
-
     end
-
 end

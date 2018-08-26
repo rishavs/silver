@@ -75,7 +75,7 @@ module Silver
             else
                 store.status = "success"
                 store.message = "User was success fully added"
-                Router.redirect("/", ctx)
+
             end
         end
     end
