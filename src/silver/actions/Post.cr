@@ -2,7 +2,7 @@ module Silver
     class Post < Granite::Base
         adapter pg
 
-        field unqid :           String
+        primary unqid :         String, auto: false
         field! title :          String
         field content :         String
         field link :            String
@@ -18,9 +18,8 @@ module Silver
             @unqid = UUID.random.to_s
         end
 
-        validate_uniqueness :unqid
-        validate_min_length :title, 3
-        validate_max_length :title, 255
+        # validate_min_length :title, 3
+        # validate_max_length :title, 255
 
         def self.get(postid) 
             begin

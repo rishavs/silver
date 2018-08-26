@@ -3,23 +3,20 @@ require "dotenv"
 require "pg"
 require "granite/adapter/pg"
 require "ecr/macros"
-
 require "crypto/bcrypt/password"
+
+Dotenv.load
+Granite::Adapters << Granite::Adapter::Pg.new({name: "pg", url: ENV["DATABASE_URL"]})
 
 require "./silver/*"
 require "./silver/actions/*"
 
 module Silver
+
     port = 3000
     host = "0.0.0.0"
-    
-    Dotenv.load
-    Granite::Adapters << Granite::Adapter::Pg.new({name: "pg", url: ENV["DATABASE_URL"]})
 
-    # Rest of code...
-    # DB = PG.connect ENV["DATABASE_URL"]
-    # pp "Connecting to Database..."
-    # pp DB.scalar "SELECT 'Connection established! The DB sends its regards.'"
+    Post.migrator.drop_and_create
 
     server = HTTP::Server.new([
         HTTP::ErrorHandler.new,
