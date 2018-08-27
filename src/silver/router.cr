@@ -43,6 +43,15 @@ module Silver
             # -------------------------------
             when { "GET", "p", "new", nil}
                 page = ECR.render("./src/silver/views/pages/Post_new.ecr")
+            when { "POST", "p", "new", nil}
+                err, postid = Post.create(ctx)
+                if err
+                    page = ECR.render("./src/silver/views/pages/Post_new.ecr")
+                else
+                    if postid
+                        Router.redirect("/p/#{postid}", ctx)
+                    end
+                end
             when { "GET", "p", route.identifier, nil}
                 err, post_data = Post.get(route.identifier)
                 # pp err, post_data
