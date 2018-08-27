@@ -10,15 +10,33 @@ module Silver
             # -------------------------------
             # Routes for Auth
             # # -------------------------------
-            # when { "GET", "register", nil, nil}
-            #     page = ECR.render("./src/silver/views/pages/Register.ecr")
-            # when { "POST", "register", nil, nil}
-            #     err, post_data = User.register(ctx)
-            #     if err
-            #         page = ECR.render("./src/silver/views/pages/Register.ecr")
-            #     else
-            #         Router.redirect("/", ctx)
-            #     end
+            when { "GET", "register", nil, nil}
+                page = ECR.render("./src/silver/views/pages/Register.ecr")
+            when { "POST", "register", nil, nil}
+                err, _ = Auth.register(ctx)
+                if err
+                    page = ECR.render("./src/silver/views/pages/Register.ecr")
+                else
+                    Router.redirect("/login", ctx)
+                end
+            when { "GET", "login", nil, nil}
+                page = ECR.render("./src/silver/views/pages/Login.ecr")
+            when { "POST", "login", nil, nil}
+                err, usercookie = Auth.login(ctx)
+                if err
+                    page = ECR.render("./src/silver/views/pages/Login.ecr")
+                else
+                    if usercookie
+                        ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header 
+                        Router.redirect("/", ctx)
+                    end
+                end
+            when { "GET", "logout", nil, nil}
+                usercookie = Auth.logout(ctx)
+                if usercookie
+                    ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
+                    Router.redirect("/", ctx)
+                end
 
             # -------------------------------
             # Routes for Posts
@@ -67,6 +85,7 @@ module Silver
             # -------------------------------
             # Render selected page
             # -------------------------------
+            currentuser = Auth.check(ctx)
             navbar  = ECR.render("./src/silver/views/components/Navbar.ecr")
             flash   = ECR.render("./src/silver/views/components/Flash.ecr") 
             # ECR.embed "./src/silver/views/Layout.ecr", ctx.response

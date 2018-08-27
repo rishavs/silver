@@ -1,0 +1,20 @@
+<article id="login_page">
+    <h1> Login Page </h1>
+    <form class="ui form" id="register_form" action="/login" method="post" onsubmit="reset_password_input()">
+        <div class="field">
+            <label>Email</label>
+            <input type="text" name="email" placeholder="Email" />
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <div class="ui icon input">
+                <input type="password" name="password" id="password" placeholder="Password" />
+                <i class="circular eye slash outline link icon" id="toggle_password" onclick="toggle_password()"></i>
+            </div>
+        </div>
+
+        <button class="ui button" type="submit" >Submit</button>
+
+        <div class="ui error message"></div>
+    </form>
+</article>
