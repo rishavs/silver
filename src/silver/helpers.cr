@@ -7,10 +7,7 @@ module Silver
             HTTP::Params.parse("")
         end
     end
-    
-    class DataError < Exception
-    end
-    
+
     class ValidationError < Exception
     end
     

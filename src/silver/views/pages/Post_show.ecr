@@ -15,7 +15,7 @@
                         <div class="content">
                             <a class="author"><%= post_data[:author_nick] %></a>
                             <div class="metapost_data">
-                                <div class="date"> <i class="clock icon"></i> 2 days ago</div>
+                                <div class="date" onload="timespan('<%= post_data[:created_at] %>')"> <i class="clock icon"></i> <%= post_data[:created_at] %> </div>
                                 <div class="rating">
                                     <i class="star icon"></i>
                                     5 Faves
