@@ -7,6 +7,33 @@ module Silver
             HTTP::Params.parse("")
         end
     end
+    
+    class Timespan
+        def self.humanize(t : Time)
+            span = Time.utc_now - t
+            mm, ss = span.total_seconds.divmod(60)            #=> [4515, 21]
+            hh, mm = mm.divmod(60)           #=> [75, 15]
+            dd, hh = hh.divmod(24)           #=> [3, 3]
+            mo, dd = dd.divmod(30)           #=> [3, 3]
+            yy, mo = mo.divmod(12)           #=> [3, 3]
+            puts "#{yy} years, #{mo} months, #{dd} days, #{hh} hours, #{mm} minutes and #{ss} seconds"
+
+
+            # pp span
+
+            # pp span.days
+            # pp span.hours
+            # pp span.minutes
+            # pp span.seconds
+
+            # just now (<2 mins)
+            # n minutes ago (< 60 mins)
+            # n hours ago ( < 24 hours)
+            # n days ago ()
+            # n months ago
+            # n years ago
+        end
+    end
 
     class ValidationError < Exception
     end
