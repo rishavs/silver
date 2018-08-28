@@ -11,7 +11,9 @@ module Silver
                 as: {unqid: String, title: String, content: String, link: String, author_id: String, author_nick: String, created_at: Time}
 
                 Timespan.humanize(post[:created_at])
-                Timespan.humanize(Time.utc(2015, 10, 12, 10, 30, 0))
+                [1..10000].each do |i|
+                    puts Timespan.humanize(Time.utc(2015, 10, 12, 10, 26, 11))
+                end
             rescue ex
                 err = ex.message.to_s
                 pp err

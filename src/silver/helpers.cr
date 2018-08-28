@@ -16,7 +16,30 @@ module Silver
             dd, hh = hh.divmod(24)           #=> [3, 3]
             mo, dd = dd.divmod(30)           #=> [3, 3]
             yy, mo = mo.divmod(12)           #=> [3, 3]
-            puts "#{yy} years, #{mo} months, #{dd} days, #{hh} hours, #{mm} minutes and #{ss} seconds"
+            # puts "#{yy} years, #{mo} months, #{dd} days, #{hh} hours, #{mm} minutes and #{ss} seconds"
+            if yy > 1
+                return "#{yy} years ago"
+            elsif yy == 1
+                return "An year ago"
+            elsif mo > 1 && mo < 13
+                return "#{mo} months ago"
+            elsif mo == 1
+                return "A month ago"
+            elsif dd > 1 && dd < 31
+                return "#{dd} days ago"
+            elsif dd == 1
+                return "A day ago"
+            elsif hh > 1 && hh < 25
+                return "#{hh} hours ago"
+            elsif hh == 1
+                return "An hour ago"
+            elsif mm > 5 && mm < 61
+                return "#{mm} minutes ago"
+            elsif mm <= 5
+                return "Just now"
+            else
+                return "A while ago"
+            end
 
 
             # pp span
