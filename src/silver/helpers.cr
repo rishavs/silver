@@ -58,6 +58,9 @@ module Silver
         end
     end
 
+    class AuthError < Exception
+    end
+
     class ValidationError < Exception
     end
     

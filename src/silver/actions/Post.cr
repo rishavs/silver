@@ -38,11 +38,18 @@ module Silver
         # -------------------------------
         # Like a specific post
         # -------------------------------
-        def self.like(postid) 
+        def self.like(postid, ctx) 
+            currentuser = Auth.check(ctx)
             begin
-                # Get nil if the post doesnt exists. Else get the NamedTuple
-                post = DB.query_one? "select unqid, title, content, link, author_id, author_nick, created_at from posts where unqid = $1", postid, 
-                as: {unqid: String, title: String, content: String, link: String, author_id: String, author_nick: String, created_at: Time}
+                if currentuser
+                    author_id = currentuser["unqid"]
+                    author_nick = currentuser["nickname"]
+                    author_flair = currentuser["flair"]
+                else
+                    raise AuthError.new("Unable to fetch user details. Are you sure you are logged in?")
+                end
+
+                pp "Post #{postid} was liked by user #{author_nick} with the id #{author_nick}"
 
             rescue ex
                 pp ex
@@ -52,7 +59,34 @@ module Silver
                     err = ex.message.to_s
                 end
             end
-            return err, post
+            return err, nil
+        end
+        
+        # -------------------------------
+        # Dislike a specific post
+        # -------------------------------
+        def self.dislike(postid, ctx) 
+            currentuser = Auth.check(ctx)
+            begin
+                if currentuser
+                    author_id = currentuser["unqid"]
+                    author_nick = currentuser["nickname"]
+                    author_flair = currentuser["flair"]
+                else
+                    raise AuthError.new("Unable to fetch user details. Are you sure you are logged in?")
+                end
+
+                pp "Post #{postid} was disliked by user #{author_nick} with the id #{author_nick}"
+
+            rescue ex
+                pp ex
+                if ex.message.to_s == "no rows"
+                    err = "Are you sure you are looking for the right post?"
+                else
+                    err = ex.message.to_s
+                end
+            end
+            return err, nil
         end
 
         # -------------------------------
@@ -71,7 +105,7 @@ module Silver
                     author_nick = currentuser["nickname"]
                     author_flair = currentuser["flair"]
                 else
-                    raise Exception.new("Unable to fetch user details. Are you sure you are logged in?")
+                    raise AuthError.new("Unable to fetch user details. Are you sure you are logged in?")
                 end
 
                 # Trim leading & trailing whitespace

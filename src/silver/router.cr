@@ -45,22 +45,19 @@ module Silver
                 page = ECR.render("./src/silver/views/pages/Post_new.ecr")
             when { "POST", "p", "new", nil}
                 err, postid = Post.create(ctx)
-                if err
+                if err || postid == nil
                     page = ECR.render("./src/silver/views/pages/Post_new.ecr")
                 else
-                    if postid
-                        Router.redirect("/p/#{postid}", ctx)
-                    end
+                    Router.redirect("/p/#{postid}", ctx)
                 end
             when { "GET", "p", route.identifier, "like"}
-                err, _ = Post.like(ctx)
+                err, _ = Post.like(route.identifier, ctx)
                 Router.redirect("/p/#{route.identifier}", ctx)
             when { "GET", "p", route.identifier, "dislike"}
-                err, _ = Post.like(ctx)
+                err, _ = Post.dislike(route.identifier, ctx)
                 Router.redirect("/p/#{route.identifier}", ctx)
             when { "GET", "p", route.identifier, nil}
                 err, post_data = Post.get(route.identifier)
-                # pp err, post_data
                 if post_data
                     page = ECR.render("./src/silver/views/pages/Post_show.ecr")
                 else

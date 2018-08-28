@@ -28,10 +28,8 @@ module Silver
             rescue ex
                 err = ex.message.to_s
                 pp err
-            ensure
-                val = nil
             end
-            return err, val
+            return err, nil
         end
         
         def self.login(ctx)
