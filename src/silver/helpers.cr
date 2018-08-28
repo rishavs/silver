@@ -18,23 +18,23 @@ module Silver
             yy, mo = mo.divmod(12)           #=> [3, 3]
             # puts "#{yy} years, #{mo} months, #{dd} days, #{hh} hours, #{mm} minutes and #{ss} seconds"
             if yy > 1
-                return "#{yy} years ago"
+                return "#{yy.to_i} years ago"
             elsif yy == 1
                 return "An year ago"
             elsif mo > 1 && mo < 13
-                return "#{mo} months ago"
+                return "#{mo.to_i} months ago"
             elsif mo == 1
                 return "A month ago"
             elsif dd > 1 && dd < 31
-                return "#{dd} days ago"
+                return "#{dd.to_i} days ago"
             elsif dd == 1
                 return "A day ago"
             elsif hh > 1 && hh < 25
-                return "#{hh} hours ago"
+                return "#{hh.to_i} hours ago"
             elsif hh == 1
                 return "An hour ago"
             elsif mm > 5 && mm < 61
-                return "#{mm} minutes ago"
+                return "#{mm.to_i} minutes ago"
             elsif mm <= 5
                 return "Just now"
             else

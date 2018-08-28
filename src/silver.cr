@@ -1,7 +1,7 @@
 require "http/server"
 require "dotenv"
 require "pg"
-require "granite/adapter/pg"
+# require "granite/adapter/pg"
 require "ecr/macros"
 require "crypto/bcrypt/password"
 require "uuid"

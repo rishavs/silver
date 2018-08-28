@@ -10,13 +10,13 @@ module Silver
                 post = DB.query_one? "select unqid, title, content, link, author_id, author_nick, created_at from posts where unqid = $1", postid, 
                 as: {unqid: String, title: String, content: String, link: String, author_id: String, author_nick: String, created_at: Time}
 
-                Timespan.humanize(post[:created_at])
-                [1..10000].each do |i|
-                    puts Timespan.humanize(Time.utc(2015, 10, 12, 10, 26, 11))
-                end
             rescue ex
-                err = ex.message.to_s
-                pp err
+                pp ex
+                if ex.message.to_s == "no rows"
+                    err = "Are you sure you are looking for the right post?"
+                else
+                    err = ex.message.to_s
+                end
             end
             return err, post
         end
@@ -29,8 +29,8 @@ module Silver
                 posts = DB.query_all "select unqid, title, content, link, author_id from posts",
                 as: {unqid: String, title: String, content: String, link: String, author_id: String}
             rescue ex
+                pp ex
                 err = ex.message.to_s
-                pp err
             end
             return err, posts
         end

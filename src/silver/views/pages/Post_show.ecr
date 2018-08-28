@@ -13,9 +13,9 @@
                             <img src="http://via.placeholder.com/50x50.png" />
                         </a>
                         <div class="content">
-                            <a class="author"><%= post_data[:author_nick] %></a>
-                            <div class="metapost_data">
-                                <div class="date" onload="timespan('<%= post_data[:created_at] %>')"> <i class="clock icon"></i> <%= post_data[:created_at] %> </div>
+                            <a class="author" href="/u/<%= post_data[:author_id] %>"><%= post_data[:author_nick] %></a>
+                            <div class="meta_data">
+                                <div class="date"> <i class="clock icon"></i> <%= Timespan.humanize(post_data[:created_at]) %> </div>
                                 <div class="rating">
                                     <i class="star icon"></i>
                                     5 Faves

@@ -66,14 +66,14 @@ module Silver
             # -------------------------------
             # when { "GET", "u", "me", nil}
             #     page = ECR.render("./src/silver/views/pages/Post_new.ecr")
-            # when { "GET", "u", route.identifier, nil}
-            #     err, post_data = Post.get(route.identifier)
-            #     # pp err, post_data
-            #     if post_data
-            #         page = ECR.render("./src/silver/views/pages/Post_show.ecr")
-            #     else
-            #         page = ECR.render("./src/silver/views/pages/Error404.ecr")
-            #     end
+            when { "GET", "u", route.identifier, nil}
+                err, user_data = User.get(route.identifier)
+                # pp err, post_data
+                if user_data
+                    page = ECR.render("./src/silver/views/pages/User.ecr")
+                else
+                    page = ECR.render("./src/silver/views/pages/Error404.ecr")
+                end
 
             # -------------------------------
             # Misc routes
