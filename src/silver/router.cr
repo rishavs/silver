@@ -52,6 +52,12 @@ module Silver
                         Router.redirect("/p/#{postid}", ctx)
                     end
                 end
+            when { "GET", "p", route.identifier, "like"}
+                err, _ = Post.like(ctx)
+                Router.redirect("/p/#{route.identifier}", ctx)
+            when { "GET", "p", route.identifier, "dislike"}
+                err, _ = Post.like(ctx)
+                Router.redirect("/p/#{route.identifier}", ctx)
             when { "GET", "p", route.identifier, nil}
                 err, post_data = Post.get(route.identifier)
                 # pp err, post_data
@@ -60,9 +66,7 @@ module Silver
                 else
                     page = ECR.render("./src/silver/views/pages/Error404.ecr")
                 end
-            when { "GET", "p", route.identifier, "like"}
-                err, _ = Post.like(ctx)
-                Router.redirect("/p/#{route.identifier}", ctx)
+
 
                 
             # -------------------------------
