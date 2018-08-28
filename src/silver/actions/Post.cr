@@ -49,15 +49,11 @@ module Silver
                     raise AuthError.new("Unable to fetch user details. Are you sure you are logged in?")
                 end
 
-                pp "Post #{postid} was liked by user #{author_nick} with the id #{author_nick}"
+                pp "Post #{postid} was liked by user #{author_nick} with the id #{author_id}"
 
             rescue ex
                 pp ex
-                if ex.message.to_s == "no rows"
-                    err = "Are you sure you are looking for the right post?"
-                else
-                    err = ex.message.to_s
-                end
+                err = ex.message.to_s
             end
             return err, nil
         end
@@ -76,15 +72,11 @@ module Silver
                     raise AuthError.new("Unable to fetch user details. Are you sure you are logged in?")
                 end
 
-                pp "Post #{postid} was disliked by user #{author_nick} with the id #{author_nick}"
+                pp "Post #{postid} was disliked by user #{author_nick} with the id #{author_id}"
 
             rescue ex
                 pp ex
-                if ex.message.to_s == "no rows"
-                    err = "Are you sure you are looking for the right post?"
-                else
-                    err = ex.message.to_s
-                end
+                err = ex.message.to_s
             end
             return err, nil
         end

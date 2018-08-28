@@ -17,7 +17,7 @@ module Silver
                 if err
                     page = ECR.render("./src/silver/views/pages/Register.ecr")
                 else
-                    Router.redirect("/login", ctx)
+                    redirect("/login", ctx)
                 end
             when { "GET", "login", nil, nil}
                 page = ECR.render("./src/silver/views/pages/Login.ecr")
@@ -28,34 +28,54 @@ module Silver
                 else
                     if usercookie
                         ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header 
-                        Router.redirect("/", ctx)
+                        redirect("/", ctx)
                     end
                 end
             when { "GET", "logout", nil, nil}
                 usercookie = Auth.logout(ctx)
                 if usercookie
                     ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
-                    Router.redirect("/", ctx)
+                    redirect("/", ctx)
                 end
 
             # -------------------------------
             # Routes for Posts
             # -------------------------------
             when { "GET", "p", "new", nil}
-                page = ECR.render("./src/silver/views/pages/Post_new.ecr")
-            when { "POST", "p", "new", nil}
-                err, postid = Post.create(ctx)
-                if err || postid == nil
+                if currentuser
                     page = ECR.render("./src/silver/views/pages/Post_new.ecr")
                 else
-                    Router.redirect("/p/#{postid}", ctx)
+                    page = ECR.render("./src/silver/views/pages/Error401.ecr")
                 end
+
+            when { "POST", "p", "new", nil}
+                if currentuser
+                    err, postid = Post.create(ctx)
+                    if err || postid == nil
+                        page = ECR.render("./src/silver/views/pages/Post_new.ecr")
+                    else
+                        redirect("/p/#{postid}", ctx)
+                    end
+                else
+                    page = ECR.render("./src/silver/views/pages/Error401.ecr")
+                end
+
             when { "GET", "p", route.identifier, "like"}
-                err, _ = Post.like(route.identifier, ctx)
-                Router.redirect("/p/#{route.identifier}", ctx)
+                if currentuser
+                    err, _ = Post.like(route.identifier, ctx)
+                    redirect("/p/#{route.identifier}", ctx)
+                else
+                    page = ECR.render("./src/silver/views/pages/Error401.ecr")
+                end
+
             when { "GET", "p", route.identifier, "dislike"}
-                err, _ = Post.dislike(route.identifier, ctx)
-                Router.redirect("/p/#{route.identifier}", ctx)
+                if currentuser
+                    err, _ = Post.dislike(route.identifier, ctx)
+                    redirect("/p/#{route.identifier}", ctx)
+                else
+                    page = ECR.render("./src/silver/views/pages/Error401.ecr")
+                end
+
             when { "GET", "p", route.identifier, nil}
                 err, post_data = Post.get(route.identifier)
                 if post_data
@@ -63,7 +83,7 @@ module Silver
                 else
                     page = ECR.render("./src/silver/views/pages/Error404.ecr")
                 end
-
+     
 
                 
             # -------------------------------
@@ -107,9 +127,16 @@ module Silver
 
         end
 
+        def self.guard(currentuser, ctx)
+            pp currentuser
+            if !currentuser
+                redirect("/login", ctx)
+            end
+        end
         def self.redirect(path, ctx)
             ctx.response.headers.add "Location", path
             ctx.response.status_code = 302
+            # return
             # break
         end
 
