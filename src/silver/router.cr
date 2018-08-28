@@ -2,7 +2,7 @@ module Silver
     class Router
         def self.run(method, url, ctx)
             err         = nil
-            currentuser = nil
+            currentuser = Auth.check(ctx)
             route       = Route.new(url)
 
             case {method, route.resource, route.identifier, route.verb}
@@ -60,7 +60,11 @@ module Silver
                 else
                     page = ECR.render("./src/silver/views/pages/Error404.ecr")
                 end
+            when { "GET", "p", route.identifier, "like"}
+                err, _ = Post.like(ctx)
+                Router.redirect("/p/#{route.identifier}", ctx)
 
+                
             # -------------------------------
             # Routes for Users
             # -------------------------------
@@ -94,7 +98,7 @@ module Silver
             # -------------------------------
             # Render selected page
             # -------------------------------
-            currentuser = Auth.check(ctx)
+
             navbar  = ECR.render("./src/silver/views/components/Navbar.ecr")
             flash   = ECR.render("./src/silver/views/components/Flash.ecr") 
             # ECR.embed "./src/silver/views/Layout.ecr", ctx.response
@@ -105,6 +109,7 @@ module Silver
         def self.redirect(path, ctx)
             ctx.response.headers.add "Location", path
             ctx.response.status_code = 302
+            # break
         end
 
     end

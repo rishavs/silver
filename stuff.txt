@@ -1,9 +1,10 @@
     CREATE TABLE USERS(
-        UNQID TEXT PRIMARY KEY,
+        UNQID TEXT NOT NULL,
         EMAIL TEXT NOT NULL UNIQUE,
         PASSWORD TEXT NOT NULL,
         NICKNAME TEXT NOT NULL,
         FLAIR TEXT,
+        ROLE TEXT DEFAULT 'user'
         IS_DELETED BOOL DEFAULT FALSE,
         BANNED_TILL TIMESTAMP,
         CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -12,7 +13,7 @@
     );
 
     CREATE TABLE POSTS(
-        UNQID TEXT PRIMARY KEY,
+        UNQID TEXT NOT NULL,
         TITLE TEXT NOT NULL,
         LINK TEXT,
         THUMB TEXT,
@@ -74,3 +75,27 @@ Luckily once you know about it it is pretty easy to workaround :)
 More info here: https://crystal-lang.org/docs/syntax_and_semantics/if_var.html under "Limitations"
 Or actually you might need store.try since it appears to also be nilable
 Also, I'd consider not allowing status and message to be nil and instead make just the store billable. So if the store is there, it always has a status and message
+
+
+creating human readable hashes;
+    adjective + noun + verb + adverb
+    eg. Purple pony dances warily
+
+    update tabl1
+set    arr_str = (select array_agg(distinct e) from unnest(arr_str || '{b,c,d}') e)
+where  not arr_str @> '{b,c,d}'
+
+
+TODO:
+serverside guards
+& JS guards
+serverside likes
+& JS likes. Also recalculate score on each like
+check banned user before write
+human readable hashes
+comments
+likes for comments
+bookmarks for posts and comments
+redo view conditionals to give same server html for all cases so as to account for URL level caching. use JS to switch conditonals. read up on caching.
+user profile page
+basic mod/admin page

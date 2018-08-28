@@ -36,6 +36,26 @@ module Silver
         end
         
         # -------------------------------
+        # Like a specific post
+        # -------------------------------
+        def self.like(postid) 
+            begin
+                # Get nil if the post doesnt exists. Else get the NamedTuple
+                post = DB.query_one? "select unqid, title, content, link, author_id, author_nick, created_at from posts where unqid = $1", postid, 
+                as: {unqid: String, title: String, content: String, link: String, author_id: String, author_nick: String, created_at: Time}
+
+            rescue ex
+                pp ex
+                if ex.message.to_s == "no rows"
+                    err = "Are you sure you are looking for the right post?"
+                else
+                    err = ex.message.to_s
+                end
+            end
+            return err, post
+        end
+
+        # -------------------------------
         # Create a new post
         # -------------------------------
         def self.create(ctx)
