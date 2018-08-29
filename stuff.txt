@@ -85,12 +85,26 @@ creating human readable hashes;
 set    arr_str = (select array_agg(distinct e) from unnest(arr_str || '{b,c,d}') e)
 where  not arr_str @> '{b,c,d}'
 
+User banning 3 types:
+    - shadow ban - user is the only one to see any writes done by him
+    - Soft ban - normal ban on all write ops.
+    - hard ban - IP ban. done via the reverse proxy.
+
+post/comment modding 3 types
+    - Lock thread
+    - Delete thread
+
+Core thought:
+    - All page fetches should be serverdriven for SEO
+    - All data writes can be JS driven
 
 TODO:
-serverside guards
+[DONE] serverside guards
 & JS guards
 serverside likes
-& JS likes. Also recalculate score on each like
+& JS likes. delayed.
+Also recalculate score on each like
+rate limit the routes. Specially write routes
 check banned user before write
 human readable hashes
 comments

@@ -45,6 +45,7 @@ module Silver
                 if currentuser
                     page = ECR.render("./src/silver/views/pages/Post_new.ecr")
                 else
+                    ctx.response.status_code = 401
                     page = ECR.render("./src/silver/views/pages/Error401.ecr")
                 end
 
@@ -57,6 +58,7 @@ module Silver
                         redirect("/p/#{postid}", ctx)
                     end
                 else
+                    ctx.response.status_code = 401
                     page = ECR.render("./src/silver/views/pages/Error401.ecr")
                 end
 
@@ -65,6 +67,7 @@ module Silver
                     err, _ = Post.like(route.identifier, ctx)
                     redirect("/p/#{route.identifier}", ctx)
                 else
+                    ctx.response.status_code = 401
                     page = ECR.render("./src/silver/views/pages/Error401.ecr")
                 end
 
@@ -73,6 +76,7 @@ module Silver
                     err, _ = Post.dislike(route.identifier, ctx)
                     redirect("/p/#{route.identifier}", ctx)
                 else
+                    ctx.response.status_code = 401
                     page = ECR.render("./src/silver/views/pages/Error401.ecr")
                 end
 
@@ -81,10 +85,9 @@ module Silver
                 if post_data
                     page = ECR.render("./src/silver/views/pages/Post_show.ecr")
                 else
+                    ctx.response.status_code = 404
                     page = ECR.render("./src/silver/views/pages/Error404.ecr")
                 end
-     
-
                 
             # -------------------------------
             # Routes for Users
@@ -92,14 +95,17 @@ module Silver
             # when { "GET", "u", "me", nil}
             #     page = ECR.render("./src/silver/views/pages/Post_new.ecr")
             when { "GET", "u", route.identifier, nil}
-                err, user_data = User.get(route.identifier)
-                # pp err, post_data
-                if user_data
-                    page = ECR.render("./src/silver/views/pages/User.ecr")
+                if currentuser
+                    err, user_data = User.get(route.identifier)
+                    if user_data
+                        page = ECR.render("./src/silver/views/pages/User.ecr")
+                    else
+                        page = ECR.render("./src/silver/views/pages/Error404.ecr")
+                    end
                 else
-                    page = ECR.render("./src/silver/views/pages/Error404.ecr")
+                    ctx.response.status_code = 401
+                    page = ECR.render("./src/silver/views/pages/Error401.ecr")
                 end
-
             # -------------------------------
             # Misc routes
             # -------------------------------
@@ -113,6 +119,7 @@ module Silver
                 err, posts_list = Post.get_list()
                 page = ECR.render("./src/silver/views/pages/Home.ecr")
             else
+                ctx.response.status_code = 404
                 page = ECR.render("./src/silver/views/pages/Error404.ecr")
             end
 
