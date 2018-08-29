@@ -58,6 +58,54 @@
         }
     }
 
+    const like_post = async (id) => {
+        // ensure user is logged in to use this action
+        // utils.redirect_to_login_if_not_loggedin()
+
+        let wait = 5
+        var component = document.getElementById("like_btn_for_post:" + id)
+
+        if (component.getAttribute("data-state") === 'default') {
+            component.classList.remove("basic")
+            component.classList.add("red")
+            component.setAttribute("data-state", 'liked')
+
+        } else {
+            component.classList.remove("red")
+            component.classList.add("basic")
+            component.setAttribute("data-state", 'default')
+        }
+
+        console.log('Taking a break...');
+        await sleep(5000);
+        console.log('Five second later');
+    }
+    // now wait 5 sec and then if the component state
+
+    const register_like = async (id) => {
+        const payload = {
+            "username": uname,
+            "password": pass
+          }
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        };
+        try {
+            const response = await fetch(`http://localhost:3000/api/users/`, options)
+            const json = await response.json();
+            console.log(json)
+            return json
+        } catch (err) {
+            console.log('Error getting documents', err)
+        }
+    }
+    const sleep = (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
     const timespan = (t) => {
         console.log ("t")
     }

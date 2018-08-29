@@ -32,14 +32,39 @@
         </div>
     </div>
     <div class="actions">
-        <a class="ui right labeled icon small basic button" href="/p/<%= post_data[:unqid] %>/like">
+        <button class="ui right labeled icon small basic button" id="like_btn_for_post:<%= post_data[:unqid] %>"
+            data-state="default" onclick="like_post('<%= post_data[:unqid] %>')">
             <i class="heart outline icon"></i>
             1024
-        </a>
+        </button>
         <button class="ui right labeled icon small basic button" onclick="toggle_post_reply()">
             <i class="reply icon"></i>
             2048
         </button>
+        <!-- <div class="ui labeled button" tabindex="0">
+            <div class="ui button">
+                <i class="heart icon"></i> Like
+            </div>
+            <a class="ui basic label">
+                2,048
+            </a>
+        </div>
+        <div class="ui labeled button" tabindex="0">
+            <div class="ui button">
+                <i class="heart icon"></i> Like
+            </div>
+            <a class="ui basic label">
+                2,048
+            </a>
+        </div>
+        <div class="ui labeled button" tabindex="0">
+            <div class="ui button">
+                <i class="heart icon"></i> Like
+            </div>
+            <a class="ui basic label">
+                2,048
+            </a>
+        </div> -->
         <button class="ui icon small button" >
             <i class="ellipsis vertical icon"></i>
         </button>
