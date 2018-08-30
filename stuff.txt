@@ -113,11 +113,7 @@ Core thought:
     - All data writes can be JS driven
 
 TODO:
-[DONE] serverside guards
-& JS guards
-serverside likes
-& JS likes. delayed.
-Also recalculate score on each like
+thumbs for posts
 rate limit the routes. Specially write routes
 check banned user before write
 human readable hashes
@@ -127,3 +123,4 @@ bookmarks for posts and comments
 redo view conditionals to give same server html for all cases so as to account for URL level caching. use JS to switch conditonals. read up on caching.
 user profile page
 basic mod/admin page
+refreshtoken
