@@ -49,12 +49,16 @@ module Silver
                     raise AuthError.new("Unable to fetch user details. Are you sure you are logged in?")
                 end
 
-                pp "Post #{postid} was liked by user #{author_nick} with the id #{author_id}"
-
+                DB.exec "UPDATE posts
+                    SET liked_by = (select array_agg(distinct e) from unnest(liked_by || '{#{author_id}}') e),
+                        liked_count = (select array_length(liked_by, 1) + 1)
+                    WHERE
+                        unqid = '#{postid}'"
             rescue ex
                 pp ex
                 err = ex.message.to_s
             end
+            pp "Post #{postid} was liked by user #{author_nick} with the id #{author_id}"
             return err, nil
         end
         

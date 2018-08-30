@@ -64,11 +64,19 @@ module Silver
 
             when { "POST", "p", route.identifier, "like"}
                 if currentuser
-                    ctx.response.content_type = "application/json"    
-                    ctx.response.print(`{"status": "success"}`.to_json)
-                    ctx.response.close
+                    ctx.response.content_type = "application/json"
+                    err, _ = Post.like(route.identifier, ctx)
+                    if err
+                        ctx.response.status_code = 500
+                        ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
+                        ctx.response.close
+                    else
+                        ctx.response.print("{\"status\": \"success\"}")
+                        ctx.response.close
+                    end
                 else
-                    ctx.response.respond_with_error(message = "Unauthorized access", code = 401)
+                    ctx.response.status_code = 401
+                    ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
                 end
 
             when { "GET", "p", route.identifier, "dislike"}

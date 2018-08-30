@@ -18,6 +18,8 @@
         LINK TEXT,
         THUMB TEXT,
         CONTENT TEXT,
+        LIKED_COUNT INT DEFAULT 1,
+        LIKED_BY TEXT [] DEFAULT '{}',
         AUTHOR_ID TEXT NOT NULL,
         AUTHOR_NICK TEXT,
         AUTHOR_FLAIR TEXT DEFAULT 'Silly Goose',
@@ -36,6 +38,14 @@ Tates top transports him and Logan to the Mesozoic Era when dinosaurs ruled the 
 The boys spin the top in a creative way at recess. But, instead of time traveling backward, they find themselves in a future world!
 The top takes Tate and Logan to ancient Egypt where they encounter exciting yet unfamiliar features of the Egyptian life, including hieroglyphics, pharaohs and pyramids.
 Tate and Logan have forged a great friendship, but when Logan asks Tate to meet his other friends, Tates insecurities creep up again.', 'authid01', 'Dan Simmons')
+
+
+update posts
+set liked_by = (select array_agg(distinct e) from unnest(liked_by || '{user04}') e),
+liked_count = (select array_length(liked_by, 1) + 1)
+
+update posts
+set liked_by = '{}'
 
     CREATE TABLE COMMENTS(
         UNQID TEXT PRIMARY KEY,

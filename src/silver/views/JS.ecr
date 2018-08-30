@@ -114,8 +114,6 @@ const make_rest_post_request = async (payload, path) => {
 //     }
 // }
 const redirect_to_login_if_not_loggedin = () => {
-    console.log("Starting the redirect function...")
-    console.log(get_cookie('usertoken'))
     if (!get_cookie('usertoken') || get_cookie('usertoken') ==="none") {
         console.log("401 Detected. Redirecting....")
         window.location = "/login"
