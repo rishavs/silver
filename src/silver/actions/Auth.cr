@@ -1,6 +1,6 @@
 module Silver
     class Auth
-        def self.register(ctx) 
+        def self.register(ctx : HTTP::Server::Context) 
             begin
                 params =    Form.get_params(ctx.request.body)
                 nickname =  params.fetch("nickname")
@@ -32,7 +32,7 @@ module Silver
             return err, nil
         end
         
-        def self.login(ctx)
+        def self.login(ctx : HTTP::Server::Context)
 
             begin
                 params =    Form.get_params(ctx.request.body)
@@ -81,21 +81,27 @@ module Silver
             return err, usercookie
         end
 
-        def self.logout(ctx)
+        def self.logout(ctx : HTTP::Server::Context)
             usercookie = HTTP::Cookie.new("usertoken", "none", "/", Time.now + 12.hours)
             usercookie
         end
 
-        def self.check(ctx)
+        def self.check(ctx : HTTP::Server::Context)
             if ctx.request.cookies.has_key?("usertoken") && ctx.request.cookies["usertoken"].value != "none"
-                payload, header = JWT.decode(ctx.request.cookies["usertoken"].value, ENV["SECRET_JWT"], "HS256")
-                currentuser = { 
-                    "unqid" => payload["unqid"].to_s, 
-                    "email" => payload["email"].to_s,
-                    "nickname" => payload["nickname"].to_s,
-                    "flair" => payload["flair"].to_s,
-                }
+                token = ctx.request.cookies["usertoken"].value
+                currentuser = check_token(token)
             end
+            return currentuser
+        end
+
+        def self.check_token(token : String)
+            payload, header = JWT.decode(token, ENV["SECRET_JWT"], "HS256")
+            currentuser = { 
+                "unqid" => payload["unqid"].to_s, 
+                "email" => payload["email"].to_s,
+                "nickname" => payload["nickname"].to_s,
+                "flair" => payload["flair"].to_s,
+            }
             return currentuser
         end
     end

@@ -62,13 +62,13 @@ module Silver
                     page = ECR.render("./src/silver/views/pages/Error401.ecr")
                 end
 
-            when { "GET", "p", route.identifier, "like"}
+            when { "POST", "p", route.identifier, "like"}
                 if currentuser
-                    err, _ = Post.like(route.identifier, ctx)
-                    redirect("/p/#{route.identifier}", ctx)
+                    ctx.response.content_type = "application/json"    
+                    ctx.response.print(`{"status": "success"}`.to_json)
+                    ctx.response.close
                 else
-                    ctx.response.status_code = 401
-                    page = ECR.render("./src/silver/views/pages/Error401.ecr")
+                    ctx.response.respond_with_error(message = "Unauthorized access", code = 401)
                 end
 
             when { "GET", "p", route.identifier, "dislike"}
@@ -130,7 +130,9 @@ module Silver
             navbar  = ECR.render("./src/silver/views/components/Navbar.ecr")
             flash   = ECR.render("./src/silver/views/components/Flash.ecr") 
             # ECR.embed "./src/silver/views/Layout.ecr", ctx.response
-            ctx.response.print(ECR.render("./src/silver/views/Layout.ecr"))
+            if !ctx.response.closed?
+                ctx.response.print(ECR.render("./src/silver/views/Layout.ecr"))
+            end
 
         end
 

@@ -36,7 +36,7 @@ module Silver
         end
         
         # -------------------------------
-        # Like a specific post
+        # Like a specific post via REST API
         # -------------------------------
         def self.like(postid, ctx) 
             currentuser = Auth.check(ctx)
