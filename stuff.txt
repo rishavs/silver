@@ -95,6 +95,10 @@ creating human readable hashes;
 set    arr_str = (select array_agg(distinct e) from unnest(arr_str || '{b,c,d}') e)
 where  not arr_str @> '{b,c,d}'
 
+Currently, only allowing liking and unliking posts. No Disliking. If need to dislike, then will add an array for disliked by and then calculate 
+liked count = liked by - disliked by.
+
+
 User banning 3 types:
     - shadow ban - user is the only one to see any writes done by him
     - Soft ban - normal ban on all write ops.

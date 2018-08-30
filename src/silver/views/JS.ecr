@@ -60,19 +60,24 @@ const reset_password_input = () => {
 const like_post = async (id) => {
     redirect_to_login_if_not_loggedin()
     const component = document.getElementById(`like_btn_for_post:${id}`)
+    const count = document.getElementById(`like_btn_count_for_post:${id}`)
 
     if (component.getAttribute("data-state") === 'default') {
         component.classList.remove("basic")
         component.classList.add("red")
         component.setAttribute("data-state", 'liked')
+        count.textContent ++
 
+        await make_rest_post_request({}, `/p/${id}/like`)
     } else {
         component.classList.remove("red")
         component.classList.add("basic")
         component.setAttribute("data-state", 'default')
+        count.textContent --
+        
+        await make_rest_post_request({}, `/p/${id}/unlike`)
     }
 
-    await make_rest_post_request({}, `/p/${id}/like`)
 }
 
 const make_rest_post_request = async (payload, path) => {

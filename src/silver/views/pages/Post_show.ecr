@@ -35,7 +35,7 @@
         <button class="ui right labeled icon small basic button" id="like_btn_for_post:<%= post_data[:unqid] %>"
             data-state="default" onclick="like_post('<%= post_data[:unqid] %>')">
             <i class="heart outline icon"></i>
-            1024
+            <span id="like_btn_count_for_post:<%= post_data[:unqid] %>"><%= post_data[:liked_count] %></span>
         </button>
         <button class="ui right labeled icon small basic button" onclick="toggle_post_reply()">
             <i class="reply icon"></i>

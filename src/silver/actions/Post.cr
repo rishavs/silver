@@ -7,8 +7,8 @@ module Silver
         def self.get(postid) 
             begin
                 # Get nil if the post doesnt exists. Else get the NamedTuple
-                post = DB.query_one? "select unqid, title, content, link, author_id, author_nick, created_at from posts where unqid = $1", postid, 
-                as: {unqid: String, title: String, content: String, link: String, author_id: String, author_nick: String, created_at: Time}
+                post = DB.query_one? "select unqid, title, content, link, liked_count, author_id, author_nick, created_at from posts where unqid = $1", postid, 
+                as: {unqid: String, title: String, content: String, link: String, liked_count: Int, author_id: String, author_nick: String, created_at: Time}
 
             rescue ex
                 pp ex
@@ -63,9 +63,9 @@ module Silver
         end
         
         # -------------------------------
-        # Dislike a specific post
+        # un-like a specific post via REST API
         # -------------------------------
-        def self.dislike(postid, ctx) 
+        def self.unlike(postid, ctx) 
             currentuser = Auth.check(ctx)
             begin
                 if currentuser
@@ -76,14 +76,18 @@ module Silver
                     raise AuthError.new("Unable to fetch user details. Are you sure you are logged in?")
                 end
 
-                pp "Post #{postid} was disliked by user #{author_nick} with the id #{author_id}"
-
+                DB.exec "UPDATE posts 
+                    SET liked_by = array_remove(liked_by, '#{author_id}'),
+                        liked_count = (select array_length(liked_by, 1) + 1)
+                    WHERE unqid = '#{postid}'"
             rescue ex
                 pp ex
                 err = ex.message.to_s
             end
+            pp "Post #{postid} was Un-liked by user #{author_nick} with the id #{author_id}"
             return err, nil
         end
+        
 
         # -------------------------------
         # Create a new post

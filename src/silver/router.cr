@@ -71,7 +71,7 @@ module Silver
                         ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
                         ctx.response.close
                     else
-                        ctx.response.print("{\"status\": \"success\"}")
+                        ctx.response.print("{\"status\": \"success\", \"message\": \"The post was sucessfully liked\"}")
                         ctx.response.close
                     end
                 else
@@ -79,14 +79,23 @@ module Silver
                     ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
                 end
 
-            when { "GET", "p", route.identifier, "dislike"}
+            when { "POST", "p", route.identifier, "unlike"}
                 if currentuser
-                    err, _ = Post.dislike(route.identifier, ctx)
-                    redirect("/p/#{route.identifier}", ctx)
+                    ctx.response.content_type = "application/json"
+                    err, _ = Post.unlike(route.identifier, ctx)
+                    if err
+                        ctx.response.status_code = 500
+                        ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
+                        ctx.response.close
+                    else
+                        ctx.response.print("{\"status\": \"success\", \"message\": \"The post was sucessfully un-liked\"}")
+                        ctx.response.close
+                    end
                 else
                     ctx.response.status_code = 401
-                    page = ECR.render("./src/silver/views/pages/Error401.ecr")
+                    ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
                 end
+
 
             when { "GET", "p", route.identifier, nil}
                 err, post_data = Post.get(route.identifier)
