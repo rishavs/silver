@@ -1,5 +1,9 @@
 version: 1.0
 shards:
+  crog:
+    github: rishavs/crog
+    commit: 468dda8417c51f809a5cb4f0c530bd52c5bfe4b4
+
   db:
     github: crystal-lang/crystal-db
     version: 0.5.0
@@ -10,7 +14,7 @@ shards:
 
   granite:
     github: amberframework/granite
-    version: 0.13.0
+    version: 0.13.1
 
   jwt:
     github: crystal-community/jwt

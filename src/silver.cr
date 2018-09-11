@@ -6,6 +6,7 @@ require "ecr/macros"
 require "crypto/bcrypt/password"
 require "uuid"
 require "jwt"
+require "crog"
 
 # Dotenv.load
 # Granite::Adapters << Granite::Adapter::Pg.new({name: "pg", url: ENV["DATABASE_URL"]})
@@ -18,7 +19,8 @@ module Silver
     port = 3000
     host = "0.0.0.0"
 
-    # Post.migrator.drop_and_create
+    mdata = Crog::Parse.new("https://i.imgur.com/FvHh7EB.jpg")
+    pp mdata
     
     Dotenv.load
     DB = PG.connect ENV["DATABASE_URL"]
@@ -28,6 +30,7 @@ module Silver
     server = HTTP::Server.new([
         HTTP::ErrorHandler.new,
         HTTP::LogHandler.new,
+        HTTP::StaticFileHandler.new("./public"),
     ]) do |context|
         context.response.content_type = "text/html; charset=utf-8"    
         Router.run(context.request.method, context.request.resource, context)

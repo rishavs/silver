@@ -13,6 +13,8 @@ dependencies:
         github: gdotdesign/cr-dotenv
     jwt:
         github: crystal-community/jwt
+    crog:
+        github: rishavs/crog
 
 targets:
     silver:
