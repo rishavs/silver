@@ -21,9 +21,21 @@ module Silver
         property logo :         String | Nil = nil
         property tags         = [] of String
 
-        def initialize(@site : String)
-    
+        def initialize(@site : URI)
+            # url = "http://www.example.com/foo/bar/filename.jpg?2384973948743"
+
+            # uri = URI.parse(url)
+            # # puts File.basename(uri.path)
+            # ext = File.extname(uri.path.not_nil!)
+            # if  [".png", ".jpg", ".jpeg"].includes?(File.extname(uri.path.not_nil!))
+            #     pp ext
+            # else
+            #     pp "no file found"
+            #     pp File.extname(uri.path.not_nil!)
+            # end
+
             HTTP::Client.get(site) do |res_io|
+ 
                 res_io.status_code  # => 200
                 document = XML.parse_html(res_io.body_io)
 
@@ -58,7 +70,7 @@ module Silver
         def get_url(node : XML::Node)
             url = node.xpath_node("//meta[@property='og:url']").try &.["content"].to_s ||
                 node.xpath_node("//meta[@name='twitter:url']").try &.["content"].to_s ||
-                @site
+                @site.to_s
 
             url
             # wrap($ => $('meta[property="og:url"]').attr('content')),

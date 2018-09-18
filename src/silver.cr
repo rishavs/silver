@@ -1,15 +1,11 @@
 require "http/server"
 require "dotenv"
 require "pg"
-# require "granite/adapter/pg"
 require "ecr/macros"
 require "crypto/bcrypt/password"
 require "uuid"
 require "jwt"
 require "crog"
-
-# Dotenv.load
-# Granite::Adapters << Granite::Adapter::Pg.new({name: "pg", url: ENV["DATABASE_URL"]})
 
 require "./silver/*"
 require "./silver/actions/*"
@@ -19,7 +15,11 @@ module Silver
     port = 3000
     host = "0.0.0.0"
 
-    mdata = Crog::Parse.new("https://i.imgur.com/FvHh7EB.jpg")
+  
+
+    # uri = URI.parse "https://i.imgur.com/FvHh7EB.jpg"
+    uri = URI.parse "https://getbedtimestories.com/library/tate-s-time-traveling-top/"
+    mdata = Meta.new(uri)
     pp mdata
     
     Dotenv.load
@@ -30,7 +30,7 @@ module Silver
     server = HTTP::Server.new([
         HTTP::ErrorHandler.new,
         HTTP::LogHandler.new,
-        HTTP::StaticFileHandler.new("./public"),
+        HTTP::StaticFileHandler.new("./public", fallthrough = true, directory_listing = false),
     ]) do |context|
         context.response.content_type = "text/html; charset=utf-8"    
         Router.run(context.request.method, context.request.resource, context)

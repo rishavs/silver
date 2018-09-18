@@ -39,6 +39,20 @@ The boys spin the top in a creative way at recess. But, instead of time travelin
 The top takes Tate and Logan to ancient Egypt where they encounter exciting yet unfamiliar features of the Egyptian life, including hieroglyphics, pharaohs and pyramids.
 Tate and Logan have forged a great friendship, but when Logan asks Tate to meet his other friends, Tates insecurities creep up again.', 'authid01', 'Dan Simmons')
 
+DO
+$$
+BEGIN
+    
+    IF (select banned_till from users where unqid = 'f127becc-6353-4b0f-b999-5541b985a5be') < now() THEN
+      RAISE EXCEPTION 'User is banned';
+    ELSE
+        insert into posts (unqid, title, link, content, author_id, author_nick, author_flair) 
+            SELECT 'pid03', 'Sample post title', 'www.google.com', 'This is a sample Post Content', unqid, nickname, flair 
+            from users where unqid = 'f127becc-6353-4b0f-b999-5541b985a5be';
+    END IF;
+END
+$$;
+
 
 update posts
 set liked_by = (select array_agg(distinct e) from unnest(liked_by || '{user04}') e),
@@ -98,6 +112,7 @@ where  not arr_str @> '{b,c,d}'
 Currently, only allowing liking and unliking posts. No Disliking. If need to dislike, then will add an array for disliked by and then calculate 
 liked count = liked by - disliked by.
 
+update users set banned_till = now() + interval '1 week' where unqid = 'f127becc-6353-4b0f-b999-5541b985a5be';
 
 User banning 3 types:
     - shadow ban - user is the only one to see any writes done by him
@@ -113,7 +128,10 @@ Core thought:
     - All data writes can be JS driven
 
 TODO:
-thumbs for posts
+Only OG supported images for now
+thumbs for posts using https://rsz.io/
+Image CDN integration
+lazyload using Intersection Observer API
 rate limit the routes. Specially write routes
 check banned user before write
 human readable hashes
