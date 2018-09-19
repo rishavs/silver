@@ -122,9 +122,22 @@ module Silver
                 unqid = UUID.random.to_s
                 
                 # DB operations
-                DB.exec "insert into posts (unqid, title, link, content, author_id, author_nick, author_flair) 
-                    SELECT '#{unqid}', '#{title}', '#{link}', '#{content}', '#{author_id}', nickname, flair 
-                    from users where unqid = '#{author_id}'"
+                # DB.exec "insert into posts (unqid, title, link, content, author_id, author_nick, author_flair) 
+                #     SELECT '#{unqid}', '#{title}', '#{link}', '#{content}', '#{author_id}', nickname, flair 
+                #     from users where unqid = '#{author_id}'"
+
+                DB.exec "DO
+                        $$
+                        BEGIN
+                            IF (select banned_till from users where unqid = '#{author_id}') > now() THEN
+                                RAISE EXCEPTION 'Ban Hammer!';
+                            ELSE
+                                insert into posts (unqid, title, link, content, author_id, author_nick, author_flair) 
+                                    SELECT '#{unqid}', '#{title}', '#{link}', '#{content}', '#{author_id}', nickname, flair 
+                                    from users where unqid = '#{author_id}';
+                            END IF;
+                        END
+                        $$;"
             rescue ex
                 pp ex
                 err = ex.message.to_s

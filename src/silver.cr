@@ -18,9 +18,9 @@ module Silver
   
 
     # uri = URI.parse "https://i.imgur.com/FvHh7EB.jpg"
-    uri = URI.parse "https://getbedtimestories.com/library/tate-s-time-traveling-top/"
-    mdata = Meta.new(uri)
-    pp mdata
+    # uri = URI.parse "https://getbedtimestories.com/library/tate-s-time-traveling-top/"
+    # mdata = Meta.new(uri)
+    # pp mdata
     
     Dotenv.load
     DB = PG.connect ENV["DATABASE_URL"]

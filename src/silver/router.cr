@@ -23,14 +23,26 @@ module Silver
                 page = ECR.render("./src/silver/views/pages/Login.ecr")
             when { "POST", "login", nil, nil}
                 err, usercookie = Auth.login(ctx)
-                if err
-                    page = ECR.render("./src/silver/views/pages/Login.ecr")
-                else
+                # if err
+                #     page = ECR.render("./src/silver/views/pages/Login.ecr")
+                # else
+                #     if usercookie
+                #         ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header 
+                #         redirect("/", ctx)
+                #     end
+                # end
+                if !err
                     if usercookie
                         ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header 
                         redirect("/", ctx)
                     end
+                elsif err.starts_with?("Ban Hammer!")
+                    ctx.response.headers["Set-Cookie"] = Auth.logout(ctx).to_set_cookie_header
+                    page = ECR.render("./src/silver/views/pages/ErrorUserBanned.ecr")
+                else
+                    page = ECR.render("./src/silver/views/pages/Login.ecr")
                 end
+
             when { "GET", "logout", nil, nil}
                 usercookie = Auth.logout(ctx)
                 if usercookie
@@ -52,11 +64,15 @@ module Silver
             when { "POST", "p", "new", nil}
                 if currentuser
                     err, postid = Post.create(ctx)
-                    if err || postid == nil
-                        page = ECR.render("./src/silver/views/pages/Post_new.ecr")
-                    else
+                    if !err
                         redirect("/p/#{postid}", ctx)
+                    elsif err.starts_with?("Ban Hammer!")
+                        ctx.response.headers["Set-Cookie"] = Auth.logout(ctx).to_set_cookie_header
+                        page = ECR.render("./src/silver/views/pages/ErrorUserBanned.ecr")
+                    else
+                        page = ECR.render("./src/silver/views/pages/Post_new.ecr")
                     end
+
                 else
                     ctx.response.status_code = 401
                     page = ECR.render("./src/silver/views/pages/Error401.ecr")

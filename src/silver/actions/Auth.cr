@@ -46,9 +46,17 @@ module Silver
                 Validate.if_length(email, "email", 3, 32)
                 Validate.if_length(password, "password", 3, 32)
 
-                user = DB.query_one "select unqid, nickname, flair, email, password from users where email = $1", email, 
+                user = DB.query_one "select unqid, nickname, flair, email, password from users where email = '#{email}'", 
                     as: {unqid: String, nickname: String, flair: String, email: String, password: String}
-            
+                # user = DB.exec "DO
+                #     $$
+                #     BEGIN
+                #         IF (select banned_till from users where email = '#{email}') > now() THEN
+                #             RAISE EXCEPTION 'Ban Hammer!';
+                #         END IF;
+                #     END
+                #     $$;",
+                #     as: {unqid: String, nickname: String, flair: String, email: String, password: String}
             rescue ex
                 pp ex
                 if ex.message.to_s == "no rows"

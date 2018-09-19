@@ -134,6 +134,13 @@ Image CDN integration
 lazyload using Intersection Observer API
 rate limit the routes. Specially write routes
 check banned user before write
+    - err msg and type to provide function & view
+    - create post
+    - edit posts
+    - like/unlike post
+    - comments
+    - login
+    - logout on User is banned error
 human readable hashes
 comments
 likes for comments
@@ -145,3 +152,5 @@ refreshtoken
 Add meta data for crwalers
 add Oembed api
 add og metatags
+update cookies
+Show banned till/for info
