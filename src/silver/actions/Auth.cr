@@ -1,6 +1,7 @@
 module Silver
     class Auth
         def self.register(ctx : HTTP::Server::Context) 
+            err = nil
             begin
                 params =    Form.get_params(ctx.request.body)
                 nickname =  params.fetch("nickname")
@@ -33,7 +34,7 @@ module Silver
         end
         
         def self.login(ctx : HTTP::Server::Context)
-
+            err = nil
             begin
                 params =    Form.get_params(ctx.request.body)
                 email =     params.fetch("email")
@@ -46,28 +47,23 @@ module Silver
                 Validate.if_length(email, "email", 3, 32)
                 Validate.if_length(password, "password", 3, 32)
 
-                user = DB.query_one "select unqid, nickname, flair, email, password from users where email = '#{email}'", 
+                user = DB.query_one "select unqid, nickname, flair, email, password from users where email = $1", email, 
                     as: {unqid: String, nickname: String, flair: String, email: String, password: String}
-                # user = DB.exec "DO
-                #     $$
-                #     BEGIN
-                #         IF (select banned_till from users where email = '#{email}') > now() THEN
-                #             RAISE EXCEPTION 'Ban Hammer!';
-                #         END IF;
-                #     END
-                #     $$;",
-                #     as: {unqid: String, nickname: String, flair: String, email: String, password: String}
-            rescue ex
-                pp ex
-                if ex.message.to_s == "no rows"
-                    puts "The User DOESN'T exists"
-                    err = "The entered email or password is wrong"
-                else
-                    err = ex.message.to_s
-                end
-            else
+
                 if Crypto::Bcrypt::Password.new(user["password"].to_s) == password
                     puts "The password matches"
+
+                    # This is the only place where we check for banned with a separate query
+                    # this is because we want user to login first and then do the check
+                    # Need to just comment out this db exec to ensure that banned users anot stopped from logging in
+                    DB.exec "DO
+                    $$
+                    BEGIN
+                        IF (select banned_till from users where email = '#{email}') > now() THEN
+                            RAISE EXCEPTION 'Ban Hammer!';
+                        END IF;
+                    END
+                    $$;"
 
                     exp = Time.now.epoch + 6000000
                     payload = { "unqid" => user["unqid"], 
@@ -78,12 +74,20 @@ module Silver
                     token = JWT.encode(payload, ENV["SECRET_JWT"], "HS256")
 
                     usercookie = HTTP::Cookie.new("usertoken", token, "/", Time.now + 12.hours)
-                    # ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
                 else 
                     puts "The password DOESN'T matches"
                     err = "The entered email or password is wrong"
                     usercookie = nil
                 end
+            rescue ex
+                pp ex
+                if ex.message.to_s == "no rows"
+                    puts "The User DOESN'T exists"
+                    err = "The entered email or password is wrong"
+                else
+                    err = ex.message.to_s
+                end
+
             end
 
             return err, usercookie

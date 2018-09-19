@@ -154,3 +154,4 @@ add Oembed api
 add og metatags
 update cookies
 Show banned till/for info
+allow login for banned users?? current no login

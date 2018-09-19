@@ -5,6 +5,7 @@ module Silver
         # Fetch a specific post
         # -------------------------------
         def self.get(postid) 
+            err = nil
             begin
                 # Get nil if the post doesnt exists. Else get the NamedTuple
                 post = DB.query_one? "select unqid, title, content, link, liked_count, author_id, author_nick, created_at from posts where unqid = $1", postid, 
@@ -25,6 +26,7 @@ module Silver
         # Fetch a list of posts
         # -------------------------------
         def self.get_list() 
+            err = nil
             begin
                 posts = DB.query_all "select unqid, title, content, link, author_id from posts",
                 as: {unqid: String, title: String, content: String, link: String, author_id: String}
@@ -39,6 +41,7 @@ module Silver
         # Like a specific post via REST API
         # -------------------------------
         def self.like(postid, ctx) 
+            err = nil
             currentuser = Auth.check(ctx)
             begin
                 if currentuser
@@ -66,6 +69,7 @@ module Silver
         # un-like a specific post via REST API
         # -------------------------------
         def self.unlike(postid, ctx) 
+            err = nil
             currentuser = Auth.check(ctx)
             begin
                 if currentuser
@@ -93,6 +97,7 @@ module Silver
         # Create a new post
         # -------------------------------
         def self.create(ctx)
+            err = nil
             currentuser = Auth.check(ctx)
 
             begin

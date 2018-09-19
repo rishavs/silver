@@ -23,15 +23,8 @@ module Silver
                 page = ECR.render("./src/silver/views/pages/Login.ecr")
             when { "POST", "login", nil, nil}
                 err, usercookie = Auth.login(ctx)
-                # if err
-                #     page = ECR.render("./src/silver/views/pages/Login.ecr")
-                # else
-                #     if usercookie
-                #         ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header 
-                #         redirect("/", ctx)
-                #     end
-                # end
                 if !err
+                    pp "NO ERROR"
                     if usercookie
                         ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header 
                         redirect("/", ctx)
@@ -40,6 +33,7 @@ module Silver
                     ctx.response.headers["Set-Cookie"] = Auth.logout(ctx).to_set_cookie_header
                     page = ECR.render("./src/silver/views/pages/ErrorUserBanned.ecr")
                 else
+                    pp err
                     page = ECR.render("./src/silver/views/pages/Login.ecr")
                 end
 
