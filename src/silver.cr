@@ -24,8 +24,12 @@ module Silver
     
     Dotenv.load
     DB = PG.connect ENV["DATABASE_URL"]
-    pp "Connecting to Database..."
-    pp DB.scalar "SELECT 'Connection established! The DB sends its regards.'"
+    # pp "Connecting to Database..."
+    # pp DB.scalar "SELECT 'Connection established! The DB sends its regards.'"
+
+    # Migrate.delete()
+    # Migrate.create()
+    # Migrate.seed()
 
     server = HTTP::Server.new([
         HTTP::ErrorHandler.new,

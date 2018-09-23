@@ -9,6 +9,18 @@
             <input class="input" name="link" type="text" placeholder="Link"/>
         </div>
         <div class="field">
+            <label class="label">Tags</label>
+            <select class="ui fluid search dropdown" multiple="">
+
+            <% tags_list.try &.each do |item| %>
+                <% if item %>
+                <option value="<%= item %>"><%= item %></option>
+                <% end %>
+            <% end %>
+
+            </select>
+        </div>
+        <div class="field">
             <label class="label">Content</label>
             <textarea class="textarea" name="content" placeholder="Content"> </textarea>
         </div>

@@ -49,6 +49,8 @@ module Silver
             # -------------------------------
             when { "GET", "p", "new", nil}
                 if currentuser
+                    _, tags_list = Tag.get_list()
+                    pp tags_list
                     page = ECR.render("./src/silver/views/pages/Post_new.ecr")
                 else
                     ctx.response.status_code = 401

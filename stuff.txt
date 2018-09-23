@@ -29,6 +29,24 @@
         DELETED_AT TIMESTAMP
     );
 
+    CREATE TABLE TAGS(
+        UNQID TEXT NOT NULL,
+        NAME TEXT NOT NULL,
+        TYPE TEXT NOT NULL,
+        CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        DELETED_AT TIMESTAMP
+    );
+
+    CREATE TABLE TAGLINKS(
+        POSTID TEXT NOT NULL,
+        TAGID TEXT NOT NULL,
+        TAGNAME TEXT NOT NULL,
+        CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        DELETED_AT TIMESTAMP
+    );
+
     insert into posts (unqid, title, link, thumb, content, author_id, author_nick)
     values ('pid01', 'All the Rage back Home', 'yahoo.com', 'https://d1csp7g2pnyvdv.cloudfront.net/uploads/story_world/cover/20/3b710db6-f1d3-431b-afe0-ab6e51bfa0b5.jpg',
     'Everyday life is hard for Tate, especially making friends. He likes to play with spinning tops all the time, which is uncommon for a third grader. A new classmate of his, Logan, can tell that Tate is different, that there’s something very special about him.
@@ -49,6 +67,15 @@ BEGIN
         insert into posts (unqid, title, link, content, author_id, author_nick, author_flair) 
             SELECT 'pid03', 'Sample post title', 'www.google.com', 'This is a sample Post Content', unqid, nickname, flair 
             from users where unqid = 'f127becc-6353-4b0f-b999-5541b985a5be';
+    END IF;
+END
+$$;
+
+DO
+$$
+BEGIN
+    IF (select count(*) from tags where name = 'xxx' and postid = 'yyy' and author_id = 'zzz') < 1 THEN
+      insert into tags (name, post_id, author_id) values ('xxx', 'yyy', 'zzz');
     END IF;
 END
 $$;
@@ -155,3 +182,4 @@ add og metatags
 update cookies
 Show banned till/for info
 allow login for banned users?? current no login
+migrator for sql
