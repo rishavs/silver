@@ -50,7 +50,6 @@ module Silver
             when { "GET", "p", "new", nil}
                 if currentuser
                     _, tags_list = Tag.get_list()
-                    pp tags_list
                     page = ECR.render("./src/silver/views/pages/Post_new.ecr")
                 else
                     ctx.response.status_code = 401
@@ -122,7 +121,7 @@ module Silver
             # Routes for Users
             # -------------------------------
             # when { "GET", "u", "me", nil}
-            #     page = ECR.render("./src/silver/views/pages/Post_new.ecr")
+            #     page = ECR.render("./src/silver/views/pages/profile.ecr")
             when { "GET", "u", route.identifier, nil}
                 if currentuser
                     err, user_data = User.get(route.identifier)

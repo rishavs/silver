@@ -11,12 +11,11 @@
         <div class="field">
             <label class="label">Tags</label>
             <select class="ui fluid search dropdown" multiple="">
-
-            <% tags_list.try &.each do |item| %>
-                <% if item %>
-                <option value="<%= item %>"><%= item %></option>
+                <option value="">Enter tags</option>
+            
+                <% tags_list.try &.each do |item| %>
+                <option value="<%= item[:name] %>"><%= item[:name] %></option>
                 <% end %>
-            <% end %>
 
             </select>
         </div>
