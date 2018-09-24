@@ -24,7 +24,6 @@ module Silver
             when { "POST", "login", nil, nil}
                 err, usercookie = Auth.login(ctx)
                 if !err
-                    pp "NO ERROR"
                     if usercookie
                         ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header 
                         redirect("/", ctx)
@@ -65,6 +64,7 @@ module Silver
                         ctx.response.headers["Set-Cookie"] = Auth.logout(ctx).to_set_cookie_header
                         page = ECR.render("./src/silver/views/pages/ErrorUserBanned.ecr")
                     else
+                        _, tags_list = Tag.get_list()
                         page = ECR.render("./src/silver/views/pages/Post_new.ecr")
                     end
 
@@ -154,7 +154,6 @@ module Silver
             # -------------------------------
             # Render selected page
             # -------------------------------
-
             navbar  = ECR.render("./src/silver/views/components/Navbar.ecr")
             flash   = ECR.render("./src/silver/views/components/Flash.ecr") 
             # ECR.embed "./src/silver/views/Layout.ecr", ctx.response
