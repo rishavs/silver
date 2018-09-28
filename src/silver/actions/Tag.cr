@@ -6,7 +6,7 @@ module Silver
         # -------------------------------
         def self.get_list() 
             begin
-                tags = DB.query_all "select name from tags",
+                tags = DB.query_all "select DISTINCT name from tags",
                 as: {name: String}
             rescue ex
                 pp ex

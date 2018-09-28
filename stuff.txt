@@ -154,6 +154,11 @@ Core thought:
     - All page fetches should be serverdriven for SEO
     - All data writes can be JS driven
 
+flag posts/comments as:
+    misleading
+    hurtful
+    irrelevant
+
 TODO:
 Only OG supported images for now
 thumbs for posts using https://rsz.io/
@@ -183,3 +188,5 @@ update cookies
 Show banned till/for info
 allow login for banned users?? current no login
 migrator for sql
+redo likes with proper table
+posts older than n days cannot be tagged or liked. also clear associated tables for this post after the n days

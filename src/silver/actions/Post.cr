@@ -36,11 +36,11 @@ module Silver
             end
             return err, posts
         end
-        
+       
         # -------------------------------
-        # Like a specific post via REST API
+        # Toggle like a specific post via REST API
         # -------------------------------
-        def self.like(postid, ctx) 
+        def self.toggle_like(postid, ctx) 
             err = nil
             currentuser = Auth.check(ctx)
             begin
@@ -52,38 +52,31 @@ module Silver
                     raise AuthError.new("Unable to fetch user details. Are you sure you are logged in?")
                 end
 
-                DB.exec "UPDATE posts
-                    SET liked_by = (select array_agg(distinct e) from unnest(liked_by || '{#{author_id}}') e),
-                        liked_count = (select array_length(liked_by, 1) + 1)
-                    WHERE
-                        unqid = '#{postid}'"
-            rescue ex
-                pp ex
-                err = ex.message.to_s
-            end
-            pp "Post #{postid} was liked by user #{author_nick} with the id #{author_id}"
-            return err, nil
-        end
-        
-        # -------------------------------
-        # un-like a specific post via REST API
-        # -------------------------------
-        def self.unlike(postid, ctx) 
-            err = nil
-            currentuser = Auth.check(ctx)
-            begin
-                if currentuser
-                    author_id = currentuser["unqid"]
-                    author_nick = currentuser["nickname"]
-                    author_flair = currentuser["flair"]
-                else
-                    raise AuthError.new("Unable to fetch user details. Are you sure you are logged in?")
-                end
+                DB.exec "DO
+                    $$
+                    DECLARE 
+                        vt   votetype;
+                    BEGIN
+                        select into vt voted from like_posts where post_id = '#{postid}' and author_id = '#{author_id}';
+                        CASE vt
+                        WHEN 'up' THEN
+                            delete from like_posts where post_id = '#{postid}' and author_id = '#{author_id}';
+                        ELSE
+                            insert into like_posts (post_id, author_id, voted, voteint) values ('#{postid}', '#{author_id}', 'up');
+                        END CASE;
+                        
+                        update posts 
+                        set liked_count = (
+                            select (
+                                COUNT(voted) filter (where voted = 'up') -
+                                COUNT(voted) filter (where voted = 'down')
+                            ) 
+                            from like_posts where post_id = '#{postid}'
+                        )
+                        where unqid = '#{postid}';
+                    END
+                    $$;"
 
-                DB.exec "UPDATE posts 
-                    SET liked_by = array_remove(liked_by, '#{author_id}'),
-                        liked_count = (select array_length(liked_by, 1) + 1)
-                    WHERE unqid = '#{postid}'"
             rescue ex
                 pp ex
                 err = ex.message.to_s
@@ -101,10 +94,12 @@ module Silver
             currentuser = Auth.check(ctx)
 
             begin
-                params = Form.get_params(ctx.request.body)
-                title =  params.fetch("title")
-                link =  params.fetch("link")
+                params  = Form.get_params(ctx.request.body)
+                title   =  params.fetch("title")
+                link    =  params.fetch("link")
                 content = params.fetch("content")
+                tags    = params.fetch_all("tags")
+
                 if currentuser
                     author_id = currentuser["unqid"]
                     author_nick = currentuser["nickname"]
@@ -122,27 +117,37 @@ module Silver
                 Validate.if_length(title, "title", 3, 128)
                 Validate.if_length(link, "link", 3, 1024)
                 Validate.if_length(content, "content", 3, 2048)
+                Validate.if_arr_length(tags, "tags", 1, 3)
 
                 # Generate some data
                 unqid = UUID.random.to_s
-                
-                # DB operations
-                # DB.exec "insert into posts (unqid, title, link, content, author_id, author_nick, author_flair) 
-                #     SELECT '#{unqid}', '#{title}', '#{link}', '#{content}', '#{author_id}', nickname, flair 
-                #     from users where unqid = '#{author_id}'"
 
-                DB.exec "DO
-                        $$
-                        BEGIN
-                            IF (select banned_till from users where unqid = '#{author_id}') > now() THEN
-                                RAISE EXCEPTION 'Ban Hammer!';
-                            ELSE
+                # create the tags_val string
+                tags_list_string = tags.try &.map {|t| "('#{t}', '#{unqid}', '#{author_id}', 'up')"}.join(", ")
+
+                # DB operations
+                query = "DO
+                    $$
+                    BEGIN
+                        IF (select banned_till from users where unqid = '#{author_id}') > now() THEN
+                            RAISE EXCEPTION 'Ban Hammer!';
+                        ELSE 
+                            IF (with to_check (itag) as ( values #{tags_list_string} )
+                                select bool_and(exists (select * from tags t where t.name = tc.itag)) as all_tags_present
+                                from to_check tc) 
+                            THEN
+                                insert into tags (name, post_id, author_id, voted) values #{tags_list_string};
                                 insert into posts (unqid, title, link, content, author_id, author_nick, author_flair) 
                                     SELECT '#{unqid}', '#{title}', '#{link}', '#{content}', '#{author_id}', nickname, flair 
                                     from users where unqid = '#{author_id}';
+                            ELSE
+                                RAISE EXCEPTION 'Fake tags!';
                             END IF;
-                        END
-                        $$;"
+                        END IF;
+                    END
+                    $$;"
+                # pp query
+                DB.exec query
             rescue ex
                 pp ex
                 err = ex.message.to_s

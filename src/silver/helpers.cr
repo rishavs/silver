@@ -251,6 +251,12 @@ module Silver
                 raise ValidationError.new("The #{itemname} (#{itemsize} chars) should be between #{min} and #{max} chars long.")
             end
         end
+        def self.if_arr_length(arrval, arrname, min, max)
+            arrsize = arrval.size
+            if !(min <= arrsize <= max)
+                raise ValidationError.new("The list: #{arrname} (#{arrsize}) should have between #{min} and #{max} items.")
+            end
+        end
         def self.if_exists(itemval, itemname, dbtable)
             unq_count = (DB.scalar "select count(*) from #{dbtable} where #{itemname} = $1", itemval).as(Int)
             # pp unq_count.to_i

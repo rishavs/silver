@@ -76,7 +76,7 @@ module Silver
             when { "POST", "p", route.identifier, "like"}
                 if currentuser
                     ctx.response.content_type = "application/json"
-                    err, _ = Post.like(route.identifier, ctx)
+                    err, _ = Post.toggle_like(route.identifier, ctx)
                     if err
                         ctx.response.status_code = 500
                         ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
@@ -93,7 +93,7 @@ module Silver
             when { "POST", "p", route.identifier, "unlike"}
                 if currentuser
                     ctx.response.content_type = "application/json"
-                    err, _ = Post.unlike(route.identifier, ctx)
+                    err, _ = Post.toggle_like(route.identifier, ctx)
                     if err
                         ctx.response.status_code = 500
                         ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")

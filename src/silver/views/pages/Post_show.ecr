@@ -41,36 +41,20 @@
             <i class="reply icon"></i>
             2048
         </button>
-        <!-- <div class="ui labeled button" tabindex="0">
-            <div class="ui button">
-                <i class="heart icon"></i> Like
-            </div>
-            <a class="ui basic label">
-                2,048
-            </a>
-        </div>
-        <div class="ui labeled button" tabindex="0">
-            <div class="ui button">
-                <i class="heart icon"></i> Like
-            </div>
-            <a class="ui basic label">
-                2,048
-            </a>
-        </div>
-        <div class="ui labeled button" tabindex="0">
-            <div class="ui button">
-                <i class="heart icon"></i> Like
-            </div>
-            <a class="ui basic label">
-                2,048
-            </a>
-        </div> -->
         <button class="ui icon small button" >
             <i class="ellipsis vertical icon"></i>
         </button>
 
     </div>
-    
+    <h3 class="ui dividing header">Tags</h3>
+    <% (1..10).each do |i|  %>
+    <div class="ui basic label" style="padding-right:3px; margin-bottom:10px">
+        <a href="#">#technology [28] &nbsp &nbsp</a>
+        <a href="#"><i class="thumbs up icon"></i> </a>
+        <a href="#"><i class="delete icon"></i> </a>
+    </div>
+    <% end %>
+
     <form class="ui reply form" id="reply_form" style="display:none" action="/c/new/" method="post">
         <br />
         <input name="parent_id" value="none" style="display:none"></input>
