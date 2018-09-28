@@ -80,6 +80,53 @@ const like_post = async (id) => {
 
 }
 
+const upvote_tag_for_post = async (tagname, postid) => {
+    redirect_to_login_if_not_loggedin()
+    const tagscore_component = document.getElementById(`tag_score_for_tagname:${tagname}`)
+    const tagup_component = document.getElementById(`tag_up_btn_for_tagname:${tagname}`)
+    const tagdown_component = document.getElementById(`tag_down_btn_for_tagname:${tagname}`)
+
+    if (tagup_component.getAttribute('data-state') === 'default') {
+        tagup_component.classList.add('red')
+        tagup_component.setAttribute('data-state', 'active')
+        tagdown_component.classList.remove('red')
+        tagdown_component.setAttribute('data-state', 'default')
+        tagscore_component.textContent ++
+
+        await make_rest_post_request({}, `/p/${postid}/upvote/${tagname}`)
+    } else {
+        tagup_component.classList.remove('red')
+        tagup_component.setAttribute('data-state', 'default')
+        tagscore_component.textContent --
+
+        await make_rest_post_request({}, `/p/${postid}/upvote/${tagname}`)
+    }
+
+}
+const downvote_tag_for_post = async (tagname, postid) => {
+    redirect_to_login_if_not_loggedin()
+    const tagscore_component = document.getElementById(`tag_score_for_tagname:${tagname}`)
+    const tagup_component = document.getElementById(`tag_up_btn_for_tagname:${tagname}`)
+    const tagdown_component = document.getElementById(`tag_down_btn_for_tagname:${tagname}`)
+
+    if (tagdown_component.getAttribute('data-state') === 'default') {
+        tagdown_component.classList.add('red')
+        tagdown_component.setAttribute('data-state', 'active')
+        tagup_component.classList.remove('red')
+        tagup_component.setAttribute('data-state', 'default')
+        tagscore_component.textContent --
+
+        await make_rest_post_request({}, `/p/${postid}/downvote/${tagname}`)
+    } else {
+        tagdown_component.classList.remove('red')
+        tagdown_component.setAttribute('data-state', 'default')
+        tagscore_component.textContent ++
+
+        await make_rest_post_request({}, `/p/${postid}/downvote/${tagname}`)
+    }
+
+}
+
 const make_rest_post_request = async (payload, path) => {
     const options = {
         method: 'POST',
@@ -97,27 +144,7 @@ const make_rest_post_request = async (payload, path) => {
         console.log('Error getting documents', err)
     }
 }
-// const register_like = async (id) => {
-//     const payload = {
-//         'username': uname,
-//         'password': pass
-//         }
-//     const options = {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify(payload)
-//     };
-//     try {
-//         const response = await fetch(`http://localhost:3000/api/users/`, options)
-//         const json = await response.json();
-//         console.log(json)
-//         return json
-//     } catch (err) {
-//         console.log('Error getting documents', err)
-//     }
-// }
+
 const redirect_to_login_if_not_loggedin = () => {
     if (!get_cookie('usertoken') || get_cookie('usertoken') ==='none') {
         console.log('401 Detected. Redirecting....')

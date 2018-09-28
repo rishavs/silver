@@ -5,23 +5,23 @@ module Silver
             currentuser = Auth.check(ctx)
             route       = Route.new(url)
 
-            case {method, route.resource, route.identifier, route.verb}
+            case {method, route.resource, route.identifier, route.verb, route.verb_identifier}
 
             # -------------------------------
             # Routes for Auth
             # # -------------------------------
-            when { "GET", "register", nil, nil}
+            when { "GET", "register", nil, nil, nil}
                 page = ECR.render("./src/silver/views/pages/Register.ecr")
-            when { "POST", "register", nil, nil}
+            when { "POST", "register", nil, nil, nil}
                 err, _ = Auth.register(ctx)
                 if err
                     page = ECR.render("./src/silver/views/pages/Register.ecr")
                 else
                     redirect("/login", ctx)
                 end
-            when { "GET", "login", nil, nil}
+            when { "GET", "login", nil, nil, nil}
                 page = ECR.render("./src/silver/views/pages/Login.ecr")
-            when { "POST", "login", nil, nil}
+            when { "POST", "login", nil, nil, nil}
                 err, usercookie = Auth.login(ctx)
                 if !err
                     if usercookie
@@ -36,7 +36,7 @@ module Silver
                     page = ECR.render("./src/silver/views/pages/Login.ecr")
                 end
 
-            when { "GET", "logout", nil, nil}
+            when { "GET", "logout", nil, nil, nil}
                 usercookie = Auth.logout(ctx)
                 if usercookie
                     ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
@@ -46,7 +46,7 @@ module Silver
             # -------------------------------
             # Routes for Posts
             # -------------------------------
-            when { "GET", "p", "new", nil}
+            when { "GET", "p", "new", nil, nil}
                 if currentuser
                     _, tags_list = Tag.get_list()
                     page = ECR.render("./src/silver/views/pages/Post_new.ecr")
@@ -55,7 +55,7 @@ module Silver
                     page = ECR.render("./src/silver/views/pages/Error401.ecr")
                 end
 
-            when { "POST", "p", "new", nil}
+            when { "POST", "p", "new", nil, nil}
                 if currentuser
                     err, postid = Post.create(ctx)
                     if !err
@@ -73,7 +73,7 @@ module Silver
                     page = ECR.render("./src/silver/views/pages/Error401.ecr")
                 end
 
-            when { "POST", "p", route.identifier, "like"}
+            when { "POST", "p", route.identifier, "like", nil}
                 if currentuser
                     ctx.response.content_type = "application/json"
                     err, _ = Post.toggle_like(route.identifier, ctx)
@@ -90,16 +90,33 @@ module Silver
                     ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
                 end
 
-            when { "POST", "p", route.identifier, "unlike"}
+            when { "POST", "p", route.identifier, "upvote", route.verb_identifier}
                 if currentuser
                     ctx.response.content_type = "application/json"
-                    err, _ = Post.toggle_like(route.identifier, ctx)
+                    err, _ = Tag.upvote_tag_for_post(route.verb_identifier, route.identifier, ctx)
                     if err
                         ctx.response.status_code = 500
                         ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
                         ctx.response.close
                     else
-                        ctx.response.print("{\"status\": \"success\", \"message\": \"The post was sucessfully un-liked\"}")
+                        ctx.response.print("{\"status\": \"success\", \"message\": \"The tag-post association was sucessfully upvoted\"}")
+                        ctx.response.close
+                    end
+                else
+                    ctx.response.status_code = 401
+                    ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
+                end
+
+            when { "POST", "p", route.identifier, "downvote", route.verb_identifier}
+                if currentuser
+                    ctx.response.content_type = "application/json"
+                    err, _ = Tag.downvote_tag_for_post(route.verb_identifier, route.identifier, ctx)
+                    if err
+                        ctx.response.status_code = 500
+                        ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
+                        ctx.response.close
+                    else
+                        ctx.response.print("{\"status\": \"success\", \"message\": \"The tag-post association was sucessfully downvoted\"}")
                         ctx.response.close
                     end
                 else
@@ -108,8 +125,8 @@ module Silver
                 end
 
 
-            when { "GET", "p", route.identifier, nil}
-                err, post_data = Post.get(route.identifier)
+            when { "GET", "p", route.identifier, nil, nil}
+                err, post_data, tags_data = Post.get(route.identifier)
                 if post_data
                     page = ECR.render("./src/silver/views/pages/Post_show.ecr")
                 else
@@ -122,7 +139,7 @@ module Silver
             # -------------------------------
             # when { "GET", "u", "me", nil}
             #     page = ECR.render("./src/silver/views/pages/profile.ecr")
-            when { "GET", "u", route.identifier, nil}
+            when { "GET", "u", route.identifier, nil, nil}
                 if currentuser
                     err, user_data = User.get(route.identifier)
                     if user_data
@@ -137,13 +154,13 @@ module Silver
             # -------------------------------
             # Misc routes
             # -------------------------------
-            when { "GET", "about", nil, nil}
+            when { "GET", "about", nil, nil, nil}
                 page = ECR.render("./src/silver/views/pages/About.ecr")
                 
             # -------------------------------
             # Catch-all routes
             # -------------------------------
-            when { "GET", nil, nil, nil}
+            when { "GET", nil, nil, nil, nil}
                 err, posts_list = Post.get_list()
                 page = ECR.render("./src/silver/views/pages/Home.ecr")
             else
@@ -179,9 +196,10 @@ module Silver
     end
    
     class Route 
-        property resource :     String | Nil = nil
-        property identifier :   String | Nil = nil
-        property verb :         String | Nil = nil
+        property resource :         String | Nil = nil
+        property identifier :       String | Nil = nil
+        property verb :             String | Nil = nil
+        property verb_identifier :  String | Nil = nil
         
         def initialize(url : String)
             # Remove all leading and trailing whitespaces.

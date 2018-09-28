@@ -47,11 +47,11 @@
 
     </div>
     <h3 class="ui dividing header">Tags</h3>
-    <% (1..10).each do |i|  %>
+    <% tags_data.try &.each do |tag| %>
     <div class="ui basic label" style="padding-right:3px; margin-bottom:10px">
-        <a href="#">#technology [28] &nbsp &nbsp</a>
-        <a href="#"><i class="thumbs up icon"></i> </a>
-        <a href="#"><i class="delete icon"></i> </a>
+        <a href="#">#<%= tag[:name] %> [<span id='tag_score_for_tagname:<%= tag[:name] %>'><%= tag[:count] %></span>] &nbsp &nbsp</a>
+        <a onclick="upvote_tag_for_post('<%= tag[:name] %>', '<%= post_data[:unqid] %>')" ><i data-state='default' id='tag_up_btn_for_tagname:<%= tag[:name] %>' class="thumbs up icon"  ></i> </a>
+        <a  onclick="downvote_tag_for_post('<%= tag[:name] %>', '<%= post_data[:unqid] %>')"><i data-state='default' id='tag_down_btn_for_tagname:<%= tag[:name] %>' class="thumbs down icon" ></i> </a>
     </div>
     <% end %>
 

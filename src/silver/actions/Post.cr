@@ -8,8 +8,19 @@ module Silver
             err = nil
             begin
                 # Get nil if the post doesnt exists. Else get the NamedTuple
-                post = DB.query_one? "select unqid, title, content, link, liked_count, author_id, author_nick, created_at from posts where unqid = $1", postid, 
+                post = DB.query_one? "select unqid, title, content, link, liked_count, author_id, author_nick, created_at from posts 
+                    where unqid = $1", postid, 
                 as: {unqid: String, title: String, content: String, link: String, liked_count: Int, author_id: String, author_nick: String, created_at: Time}
+
+                tags = DB.query_all "select name,  
+                    (select 
+                        (
+                            COUNT(voted) filter (where voted = 'up') -
+                            COUNT(voted) filter (where voted = 'down')
+                        ) as vcount )
+                    from tags where post_id = '#{postid}'
+                    group by name;", 
+                    as: {name: String, count: Int}
 
             rescue ex
                 pp ex
@@ -19,7 +30,7 @@ module Silver
                     err = ex.message.to_s
                 end
             end
-            return err, post
+            return err, post, tags
         end
 
         # -------------------------------
