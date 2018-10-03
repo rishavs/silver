@@ -6,6 +6,7 @@ require "crypto/bcrypt/password"
 require "uuid"
 require "jwt"
 require "crog"
+require "json"
 
 require "./silver/*"
 require "./silver/actions/*"

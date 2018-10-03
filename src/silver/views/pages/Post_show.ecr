@@ -49,11 +49,25 @@
     <h3 class="ui dividing header">Tags</h3>
     <% tags_data.try &.each do |tag| %>
     <div class="ui basic label" style="padding-right:3px; margin-bottom:10px">
-        <a href="#">#<%= tag[:name] %> [<span id='tag_score_for_tagname:<%= tag[:name] %>'><%= tag[:count] %></span>] &nbsp &nbsp</a>
-        <a onclick="upvote_tag_for_post('<%= tag[:name] %>', '<%= post_data[:unqid] %>')" ><i data-state='default' id='tag_up_btn_for_tagname:<%= tag[:name] %>' class="thumbs up icon"  ></i> </a>
-        <a  onclick="downvote_tag_for_post('<%= tag[:name] %>', '<%= post_data[:unqid] %>')"><i data-state='default' id='tag_down_btn_for_tagname:<%= tag[:name] %>' class="thumbs down icon" ></i> </a>
+        <a href="#">#<%= tag %> [<span id='tag_score_for_tagname:<%= tag %>'><%= tag[:count] %></span>] &nbsp &nbsp</a>
+        <a onclick="upvote_tag_for_post('<%= tag %>', '<%= post_data[:unqid] %>')" ><i data-state='default' id='tag_up_btn_for_tagname:<%= tag %>' class="thumbs up icon"  ></i> </a>
+        <a onclick="downvote_tag_for_post('<%= tag %>', '<%= post_data[:unqid] %>')"><i data-state='default' id='tag_down_btn_for_tagname:<%= tag %>' class="thumbs down icon" ></i> </a>
     </div>
     <% end %>
+    <div class="ui accordion">
+        <div class="title">
+            <i class="dropdown icon"></i>
+            More Tag stuff
+        </div>
+        <div class="content field">
+                <label class="label">Associate more tags with this post</label>
+                <select id="all_tags_multiselect" class="ui fluid search dropdown" multiple="">
+                    <option value="">Enter tags</option>
+ 
+                </select>
+                <button class="ui button primary">Add Tag</button>
+        </div>
+    </div>
 
     <form class="ui reply form" id="reply_form" style="display:none" action="/c/new/" method="post">
         <br />

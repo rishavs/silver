@@ -6,8 +6,7 @@ module Silver
         # -------------------------------
         def self.get_list() 
             begin
-                tags = DB.query_all "select DISTINCT name from tags",
-                as: {name: String}
+                tags = DB.query_all "select DISTINCT name from tags", as: String
             rescue ex
                 pp ex
                 err = ex.message.to_s
@@ -33,7 +32,7 @@ module Silver
                 DB.exec "DO
                     $$
                     DECLARE 
-                        vt   votetype;
+                        vt votetype;
                     BEGIN
                         select into vt voted from tags where name ='#{tag_name}' and post_id = '#{postid}' and author_id = '#{author_id}';
                         CASE vt
@@ -73,7 +72,7 @@ module Silver
                 DB.exec "DO
                     $$
                     DECLARE 
-                        vt   votetype;
+                        vt votetype;
                     BEGIN
                         select into vt voted from tags where name ='#{tag_name}' and post_id = '#{postid}' and author_id = '#{author_id}';
                         CASE vt

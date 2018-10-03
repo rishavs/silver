@@ -87,7 +87,7 @@ module Silver
                     end
                 else
                     ctx.response.status_code = 401
-                    ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
+                    ctx.response.print("{\"status\": \"error\", \"message\": \"Authorization error\"}")
                 end
 
             when { "POST", "p", route.identifier, "upvote", route.verb_identifier}
@@ -104,7 +104,7 @@ module Silver
                     end
                 else
                     ctx.response.status_code = 401
-                    ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
+                    ctx.response.print("{\"status\": \"error\", \"message\": \"Authorization error\"}")
                 end
 
             when { "POST", "p", route.identifier, "downvote", route.verb_identifier}
@@ -121,7 +121,7 @@ module Silver
                     end
                 else
                     ctx.response.status_code = 401
-                    ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
+                    ctx.response.print("{\"status\": \"error\", \"message\": \"Authorization error\"}")
                 end
 
 
@@ -134,6 +134,42 @@ module Silver
                     page = ECR.render("./src/silver/views/pages/Error404.ecr")
                 end
                 
+            # -------------------------------
+            # Routes for Tags
+            # -------------------------------
+            when { "POST", "t", "all", nil, nil}
+            if currentuser
+                ctx.response.content_type = "application/json"
+                err, tags_list = Tag.get_list()
+                if err
+                    ctx.response.status_code = 500
+                    ctx.response.print("{\"status\": \"error\", \"message\": \"#{err}\"}")
+                    ctx.response.close
+                else
+                    # formatting for semantic-ui format
+                    tags_json = JSON.build do |json|
+                        json.object do
+                            json.field "success", true
+                            json.field "results" do
+                                json.array do
+                                    tags_list.try &.each do |t|
+                                        json.object do
+                                            json.field "name", t
+                                            json.field "value", t 
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    ctx.response.print(tags_json)
+                    ctx.response.close
+                end
+            else
+                ctx.response.status_code = 401
+                ctx.response.print("{\"status\": \"error\", \"message\": \"Authorization error\"}")
+            end
+
             # -------------------------------
             # Routes for Users
             # -------------------------------
@@ -209,6 +245,7 @@ module Silver
             @resource =     arr[0]? && arr[0] != "" ? arr[0] : nil
             @identifier =   arr[1]? ? arr[1] : nil
             @verb =         arr[2]? ? arr[2] : nil
+            @verb_identifier =         arr[3]? ? arr[3] : nil
         end
     end
 end
