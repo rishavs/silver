@@ -1,4 +1,8 @@
-
+const toggle_more_tag_controls = () => {
+    if (get_cookie('usertoken') || get_cookie('usertoken') != 'none') {
+        document.getElementById('more_tag_controls').style.display = 'block';
+    }
+}
 
 const fetch_all_tags = async () => {
     all_tags_list = await make_rest_post_request({}, `/t/all`)
@@ -144,9 +148,9 @@ const make_rest_post_request = async (payload, path) => {
     };
     try {
         const response = await fetch(path, options)
-        // console.log(response)
+        console.log(response)
         const json = await response.json();
-        // console.log(json)
+        console.log(json)
         return json
     } catch (err) {
         console.log('Error getting documents', err)

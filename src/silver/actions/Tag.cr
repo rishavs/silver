@@ -90,7 +90,7 @@ module Silver
                 pp ex
                 err = ex.message.to_s
             end
-            pp "Tag #{tag_name} was Upvoted by user #{author_nick} for Post #{postid} "
+            pp "Tag #{tag_name} was Downvoted by user #{author_nick} for Post #{postid} "
             return err, nil
         end
 

@@ -73,7 +73,7 @@ module Silver
                         WHEN 'up' THEN
                             delete from like_posts where post_id = '#{postid}' and author_id = '#{author_id}';
                         ELSE
-                            insert into like_posts (post_id, author_id, voted, voteint) values ('#{postid}', '#{author_id}', 'up');
+                            insert into like_posts (post_id, author_id, voted) values ('#{postid}', '#{author_id}', 'up');
                         END CASE;
                         
                         update posts 
